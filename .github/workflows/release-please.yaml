@@ -17,10 +17,18 @@ jobs:
       minor: ${{ steps.release-please.outputs.minor }}
       patch: ${{ steps.release-please.outputs.patch }}
     steps:
-      - uses: googleapis/release-please-action@v4
+      - name: Generate authentication token from GitHub App
+        id: app-token
+        uses: actions/create-github-app-token@v1
+        with:
+          app-id: ${{ vars.REPOSITORY_BOT_APP_ID }}
+          private-key: ${{ secrets.REPOSITORY_BOT_PRIVATE_KEY }}
+
+      - name: Run Release Please
+        uses: googleapis/release-please-action@v4
         id: release-please
         with:
-          token: ${{ secrets.PAT_GITHUB_TOKEN }}
+          token: ${{ steps.app-token.outputs.token }}
 
   upload-release-artifact:
     needs: release-please
@@ -45,5 +53,5 @@ jobs:
       - name: "Upload Release Artifact"
         if: ${{ needs.release-please.outputs.releases_created }}
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GITHUB_TOKEN: ${{ steps.app-token.outputs.token }}
         run: gh release upload ${{ needs.release-please.outputs.tag_name }} ./target/gpg-keyserver-${{ needs.release-please.outputs.major }}.${{ needs.release-please.outputs.minor }}.${{ needs.release-please.outputs.patch }}.jar

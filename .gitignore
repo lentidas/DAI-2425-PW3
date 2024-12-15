@@ -40,3 +40,12 @@ Thumbs.db
 
 # Folder config file
 [Dd]esktop.ini
+
+## Terraform
+infra/.terraform/
+infra/terraform.tfstate
+infra/terraform.tfstate.backup
+infra/.terraform.lock.hcl
+
+## Summon
+infra/secrets.yml

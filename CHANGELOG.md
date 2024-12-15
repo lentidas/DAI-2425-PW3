@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.1.1](https://github.com/lentidas/DAI-2425-PW3/compare/v0.1.0...v0.1.1) (2024-12-15)
+
+
+### Continuous Integration
+
+* fix some permission issues ([e32575b](https://github.com/lentidas/DAI-2425-PW3/commit/e32575ba92873d0bfb9f6c76538f3b421b7fe8e1))
+
 ## [0.1.0](https://github.com/lentidas/DAI-2425-PW3/compare/v0.1.0...v0.1.0) (2024-12-15)
 
 

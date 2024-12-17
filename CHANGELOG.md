@@ -1,5 +1,23 @@
 # Changelog
 
+## [0.1.2](https://github.com/lentidas/DAI-2425-PW3/compare/v0.1.1...v0.1.2) (2024-12-17)
+
+
+### Features
+
+* add output with the public IP and FQDN of the VM ([7a7e455](https://github.com/lentidas/DAI-2425-PW3/commit/7a7e4554f350b8f65ae2775353f7480633e3d5de))
+* add PedroAS7's SSH key ([c1d8414](https://github.com/lentidas/DAI-2425-PW3/commit/c1d8414757d38a8e015205dbe59a49b13786fa45))
+
+
+### Bug Fixes
+
+* fix outputs ([2b7040f](https://github.com/lentidas/DAI-2425-PW3/commit/2b7040f49f361d350d821783422d6bc13ce66844))
+
+
+### Documentation
+
+* add more info on the infra README.md ([1fa7e3f](https://github.com/lentidas/DAI-2425-PW3/commit/1fa7e3f108ccc04ca9e5a5b4916d1cbc8d1af228))
+
 ## [0.1.1](https://github.com/lentidas/DAI-2425-PW3/compare/v0.1.0...v0.1.1) (2024-12-15)
 
 

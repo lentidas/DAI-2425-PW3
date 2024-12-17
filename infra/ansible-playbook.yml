@@ -33,6 +33,7 @@
         - curl
         - gnupg
         - lsb-release
+        - tmux
 
     - name: Add Docker's repository
       ansible.builtin.deb822_repository:

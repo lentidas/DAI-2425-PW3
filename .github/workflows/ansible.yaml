@@ -15,7 +15,7 @@ defaults:
     working-directory: infra/ansible
 
 jobs:
-  terraform:
+  ansible:
     runs-on: ubuntu-latest
     steps:
     - name: "Check out the repository"

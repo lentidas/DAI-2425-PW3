@@ -1,8 +1,3 @@
-resource "tls_private_key" "ssh_key" {
-  algorithm = "RSA"
-  rsa_bits  = 4096
-}
-
 resource "azurerm_resource_group" "resource_group" {
   name     = "${local.app_name}-rg"
   location = "West Europe"
@@ -118,7 +113,7 @@ resource "azurerm_linux_virtual_machine" "ubuntu_vm" {
 
   admin_ssh_key {
     username   = "ubuntu"
-    public_key = resource.tls_private_key.ssh_key.public_key_openssh
+    public_key = var.deploy_ssh_public_key
   }
 
   os_disk {
@@ -134,58 +129,4 @@ resource "azurerm_linux_virtual_machine" "ubuntu_vm" {
   }
 
   tags = local.default_tags
-}
-
-# We create this file to store the private key in a file so that we can use it with ansible-playbook.
-# This is a workaround, because while we could pass the key directly in the command, since it it a sensitive value,
-# Terraform would then hide the output from Ansible.
-resource "null_resource" "create_secret_key_file" {
-  triggers = {
-    always_run = timestamp() # Trigger a run on every Terraform apply.
-  }
-
-  provisioner "local-exec" {
-    working_dir = path.module
-    command     = <<-EOT
-      echo "${resource.tls_private_key.ssh_key.private_key_openssh}" > ./id_rsa.key && chmod 600 ./id_rsa.key
-    EOT
-  }
-
-  depends_on = [resource.azurerm_linux_virtual_machine.ubuntu_vm]
-}
-
-resource "null_resource" "run_ansible_playbook" {
-  triggers = {
-    secret_key_file = null_resource.create_secret_key_file.id
-  }
-
-  provisioner "local-exec" {
-    working_dir = path.module
-    command     = <<-EOT
-      ANSIBLE_HOST_KEY_CHECKING=False \
-      ANSIBLE_PYTHON_INTERPRETER=/usr/bin/python3 \
-      ansible-playbook \
-        -u ubuntu \
-        -i '${resource.azurerm_public_ip.public_ip.fqdn},' \
-        --key-file ./id_rsa.key \
-        ./ansible-playbook.yml
-    EOT
-  }
-
-  depends_on = [resource.azurerm_linux_virtual_machine.ubuntu_vm]
-}
-
-# Delete the secret key file after running the Ansible Playbook.
-resource "null_resource" "delete_secret_key_file" {
-  triggers = {
-    secret_key_file  = null_resource.create_secret_key_file.id
-    ansible_playbook = null_resource.run_ansible_playbook.id
-  }
-
-  provisioner "local-exec" {
-    working_dir = path.module
-    command     = "rm ./id_rsa.key"
-  }
-
-  depends_on = [resource.azurerm_linux_virtual_machine.ubuntu_vm]
 }

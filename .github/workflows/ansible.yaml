@@ -1,0 +1,44 @@
+---
+name: ansible
+
+on:
+  workflow_dispatch:
+
+  workflow_run:
+    workflows:
+      - terraform
+    types:
+      - completed
+
+defaults:
+  run:
+    working-directory: ./infra/ansible
+
+jobs:
+  terraform:
+    runs-on: ubuntu-latest
+    steps:
+    - name: "Check out the repository"
+      uses: actions/checkout@v4
+
+    - name: "Install Python"
+      uses: actions/setup-python@v4
+      with:
+        python-version: "3.13"
+
+    - name: "Install Ansible"
+      run: |
+        python -m pip install --upgrade pip
+        pip install ansible
+
+    - name: "Create key file from environment variable"
+      env:
+        SSH_PRIVATE_KEY: ${{ vars.SSH_PRIVATE_KEY }}
+      run: |
+        mkdir -p ~/.ssh
+        echo "${SSH_PRIVATE_KEY}" > ~/.ssh/id_ed25519
+        chmod 600 ~/.ssh/id_ed25519
+
+    - name: "Run Ansible Playbook"
+      run: |
+        ansible-playbook -i gpg-keyserver.westeurope.cloudapp.azure.com, ansible-playbook.yml

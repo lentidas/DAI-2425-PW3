@@ -22,7 +22,7 @@
         cache_valid_time: 3600
         force_apt_get: true
 
-    - name: Install required packages for Docker
+    - name: Install required packages
       ansible.builtin.apt:
         name: "{{ item }}"
         state: present
@@ -34,6 +34,8 @@
         - gnupg
         - lsb-release
         - tmux
+        - vim
+        - glances
 
     - name: Add Docker's repository
       ansible.builtin.deb822_repository:
@@ -77,3 +79,11 @@
         state: started
         enabled: true
 
+    - name: Check if reboot required after package upgrade
+      ansible.builtin.stat:
+        path: /var/run/reboot-required
+      register: reboot_required_file
+
+    - name: Reboot after package upgrade if required
+      ansible.builtin.reboot:
+      when: reboot_required_file.stat.exists == true

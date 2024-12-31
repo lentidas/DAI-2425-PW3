@@ -42,10 +42,10 @@ Thumbs.db
 [Dd]esktop.ini
 
 ## Terraform
-infra/.terraform/
-infra/terraform.tfstate
-infra/terraform.tfstate.backup
-infra/.terraform.lock.hcl
+infra/terraform/.terraform/
+infra/terraform/terraform.tfstate
+infra/terraform/terraform.tfstate.backup
+infra/terraform/.terraform.lock.hcl
 
 ## Summon
-infra/secrets.yml
+infra/terraform/secrets.yml

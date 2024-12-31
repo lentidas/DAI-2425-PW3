@@ -4,11 +4,11 @@ name: ansible
 on:
   workflow_dispatch:
 
-  workflow_run:
-    workflows:
-      - terraform
-    types:
-      - completed
+  # workflow_run:
+  #   workflows:
+  #     - terraform
+  #   types:
+  #     - completed
 
 defaults:
   run:

@@ -23,7 +23,7 @@ env:
 
 defaults:
   run:
-    working-directory: ./infra/terraform
+    working-directory: infra/terraform
 
 jobs:
   terraform:

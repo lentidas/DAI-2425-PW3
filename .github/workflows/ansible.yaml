@@ -33,7 +33,7 @@ jobs:
 
     - name: "Create key file from environment variable"
       env:
-        SSH_PRIVATE_KEY: ${{ vars.SSH_PRIVATE_KEY }}
+        SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
       run: |
         mkdir -p ~/.ssh
         echo "${SSH_PRIVATE_KEY}" > ~/.ssh/id_ed25519

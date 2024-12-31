@@ -12,7 +12,7 @@ on:
 
 defaults:
   run:
-    working-directory: ./infra/ansible
+    working-directory: infra/ansible
 
 jobs:
   terraform:

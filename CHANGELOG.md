@@ -1,5 +1,19 @@
 # Changelog
 
+## [0.1.3](https://github.com/lentidas/DAI-2425-PW3/compare/v0.1.2...v0.1.3) (2024-12-31)
+
+
+### Continuous Integration
+
+* disable chaining of workflows ([0fb346e](https://github.com/lentidas/DAI-2425-PW3/commit/0fb346ed7ebad7e92fc76a5940f20b060f290ed1))
+* disable host key checking ([e61fba8](https://github.com/lentidas/DAI-2425-PW3/commit/e61fba8f0ed9ab13a608675b24f8525538da5559))
+* fix job name for the Ansible workflow ([ef5ce93](https://github.com/lentidas/DAI-2425-PW3/commit/ef5ce9315aba48fd5520a92ded9da8043130c61b))
+* fix SSH key in Ansible workflow ([15fb335](https://github.com/lentidas/DAI-2425-PW3/commit/15fb335ab08bed79172a5747ec45d4d9273f4824))
+* fix working directory ([092e6d2](https://github.com/lentidas/DAI-2425-PW3/commit/092e6d227f2608d250d97ee288b0cb4bbe4ec175))
+* fix working directory and add missing checkout ([682efb5](https://github.com/lentidas/DAI-2425-PW3/commit/682efb56a966c7aad25fd8ee9754761d7b741300))
+* separate Terraform and Ansible and add new workflow ([2cab1fa](https://github.com/lentidas/DAI-2425-PW3/commit/2cab1fa42a0ea52758766a6f5dd984de5d86257b))
+* specify Ansible user ([cb4d30a](https://github.com/lentidas/DAI-2425-PW3/commit/cb4d30ad208d779fe37027146d428d4e3a20cf63))
+
 ## [0.1.2](https://github.com/lentidas/DAI-2425-PW3/compare/v0.1.1...v0.1.2) (2024-12-17)
 
 

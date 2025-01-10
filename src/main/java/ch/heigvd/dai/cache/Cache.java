@@ -18,6 +18,4 @@
 
 package ch.heigvd.dai.cache;
 
-public class Cache {
-
-}
+public class Cache {}

@@ -18,6 +18,4 @@
 
 package ch.heigvd.dai.db;
 
-public class Database {
-
-}
+public class Database {}

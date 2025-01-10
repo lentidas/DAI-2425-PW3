@@ -17,6 +17,7 @@
  */
 
 package ch.heigvd.dai.endpoints;
+
 import ch.heigvd.dai.cache.Cache;
 import ch.heigvd.dai.db.Database;
 import io.javalin.config.Key;
@@ -24,13 +25,9 @@ import io.javalin.http.*;
 import org.jetbrains.annotations.NotNull;
 
 public class Dummy {
-  public Dummy()
-  {
+  public Dummy() {}
 
-  }
-
-  public void DummyEndpoint(@NotNull Context ctx) throws Exception
-  {
+  public void DummyEndpoint(@NotNull Context ctx) throws Exception {
     final Database database = ctx.appData(new Key<>("database"));
     final Cache cache = ctx.appData(new Key<>("cache"));
 

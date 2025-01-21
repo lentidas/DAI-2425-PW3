@@ -1,0 +1,70 @@
+networks:
+  gpg-keyserver-net:
+    driver: bridge
+
+services:
+  reverseproxy:
+    image: 'traefik:3'
+    container_name: gpg-keyserver-traefik
+    restart: unless-stopped
+    environment:
+      - TZ=Europe/Zurich
+    command:
+      - "--global.checknewversion=false"
+      - "--global.sendAnonymousUsage=false"
+      #- "--log.level=DEBUG"
+      - "--api.insecure=true"
+      - "--providers.docker=true"
+      - "--providers.docker.exposedbydefault=false"
+      - "--entryPoints.web.address=:80"
+      - "--entryPoints.websecure.address=:443"
+      - "--certificatesresolvers.letsencrypt.acme.httpchallenge=true"
+      - "--certificatesresolvers.letsencrypt.acme.httpchallenge.entrypoint=web"
+      - "--certificatesresolvers.letsencrypt.acme.caserver=https://acme-v02.api.letsencrypt.org/directory"
+      - "--certificatesresolvers.letsencrypt.acme.email=goncalo.carvalheiroheleno@heig-vd.ch"
+      - "--certificatesresolvers.letsencrypt.acme.storage=/letsencrypt/acme.json"
+    networks:
+      - gpg-keyserver-net
+    ports:
+      - 80:80
+      - 443:443
+      - 8080:8080 # Traefik Dashboard
+    volumes:
+      - "/var/run/docker.sock:/var/run/docker.sock:ro"
+      - gpg-keyserver-ssl-certs:/letsencrypt:rw
+
+  website:
+    image: 'traefik/whoami:latest'
+    container_name: gpg-keyserver-website
+    restart: unless-stopped
+    environment:
+      - TZ=Europe/Zurich
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.website.rule=Host(`gpg-keyserver.westeurope.cloudapp.azure.com`)"
+      - "traefik.http.routers.website.entrypoints=websecure"
+      - "traefik.http.routers.website.tls=true"
+      - "traefik.http.routers.website.tls.certresolver=letsencrypt"
+    networks:
+      - gpg-keyserver-net
+
+  database:
+    image: 'bitnami/postgresql:17'
+    container_name: gpg-keyserver-postgresql
+    restart: unless-stopped
+    environment:
+      - TZ=Europe/Zurich
+      - POSTGRESQL_USERNAME=gpg-keyserver
+      - POSTGRESQL_PASSWORD=password123 # FIXME Change this password
+      - POSTGRESQL_DATABASE=gpg-keyserver-db
+      - POSTGRESQL_POSTGRES_PASSWORD=root # FIXME Change this password
+    ports:
+      - 5432:5432
+    volumes:
+      - gpg-keyserver-db-data:/data:ro
+    networks:
+      - gpg-keyserver-net
+
+volumes:
+  gpg-keyserver-db-data:
+  gpg-keyserver-ssl-certs:

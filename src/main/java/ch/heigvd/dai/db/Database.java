@@ -18,4 +18,45 @@
 
 package ch.heigvd.dai.db;
 
-public class Database {}
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.SQLException;
+import java.sql.Statement;
+
+public class Database {
+
+  private final Connection _connection;
+  final String schema;
+  public final Users users;
+
+  /**
+   * Initiates a connection to a PostgresSQL database
+   *
+   * @param host Database host
+   * @param database Database name
+   * @param username Username to connect with
+   * @param password User's password
+   * @param schema Database schema
+   * @param port Database port
+   * @throws SQLException See java.sql.Connection.DriverManager.getConnection() for more information
+   */
+  public Database(
+      String host, String database, String username, String password, String schema, int port)
+      throws SQLException {
+
+    String connectionString = String.format("jdbc:postgresql://%s:%s/%s", host, port, database);
+    _connection = DriverManager.getConnection(connectionString, username, password);
+    this.schema = schema;
+    _connection.setCatalog(schema);
+
+    users = new Users(this);
+  }
+
+  Statement getStatement() throws SQLException {
+    return _connection.createStatement();
+  }
+
+  public void close() throws SQLException {
+    _connection.close();
+  }
+}

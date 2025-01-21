@@ -33,5 +33,6 @@ public class Main {
             });
 
     app.start(7070);
+    cache.clear();
   }
 }

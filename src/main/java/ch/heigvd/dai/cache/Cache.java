@@ -18,4 +18,105 @@
 
 package ch.heigvd.dai.cache;
 
-public class Cache {}
+import java.util.ArrayList;
+import java.util.HashMap;
+import javax.management.openmbean.KeyAlreadyExistsException;
+
+/** A cache-managing class */
+public class Cache {
+
+  private final HashMap<String, CacheEntry> _entryMap;
+
+  /** Public constructor for the cache instance */
+  public Cache() {
+    _entryMap = new HashMap<>();
+  }
+
+  /** Removes all expired cache entries */
+  private void purge() {
+    ArrayList<String> toDelete = new ArrayList<>();
+    for (HashMap.Entry<String, CacheEntry> pair : _entryMap.entrySet()) {
+      if (pair.getValue().hasExpired()) {
+        toDelete.add(pair.getKey());
+      }
+    }
+
+    for (String key : toDelete) {
+      _entryMap.remove(key);
+    }
+  }
+
+  /**
+   * Checks whether the cache has an entry with the specified key
+   *
+   * @param key Key to search for
+   * @return True if entry exists, false if not
+   */
+  public boolean hasEntry(String key) {
+    return _entryMap.containsKey(key);
+  }
+
+  /**
+   * Gets an entry from the cache
+   *
+   * @param key Key to search for
+   * @return Found object
+   * @throws IndexOutOfBoundsException Raised when cache does not have the provided key
+   */
+  public Object getEntry(String key) throws IndexOutOfBoundsException {
+    purge();
+
+    if (!hasEntry(key)) {
+      throw new IndexOutOfBoundsException("Unknown key '" + key + "'");
+    }
+
+    CacheEntry entry = _entryMap.get(key);
+    return entry.storedObject();
+  }
+
+  /**
+   * Pushes a new value to the cache
+   *
+   * @param key Key to identify value by
+   * @param value Object to be stored
+   * @throws KeyAlreadyExistsException Raised if key already exists
+   */
+  public void push(String key, Object value) throws KeyAlreadyExistsException {
+    if (hasEntry(key)) {
+      throw new KeyAlreadyExistsException("Key '" + key + "' already exists");
+    }
+
+    _entryMap.put(key, new CacheEntry(value, CacheEntry.CACHE_EXPIRY_MINUTES));
+  }
+
+  /**
+   * Removes a specific key from the cache map
+   *
+   * @param key Key to remove
+   * @throws IndexOutOfBoundsException Raised if key does not exist
+   */
+  public void pop(String key) throws IndexOutOfBoundsException {
+    if (!hasEntry(key)) {
+      throw new IndexOutOfBoundsException("Unknown key '" + key + "'");
+    }
+
+    _entryMap.remove(key);
+  }
+
+  /**
+   * Replaces an already-existing key's value with another value
+   *
+   * @param key Key to search for
+   * @param newValue New value
+   * @throws IndexOutOfBoundsException Raised if key does not exist
+   */
+  public void replace(String key, Object newValue) throws IndexOutOfBoundsException {
+    this.pop(key);
+    this.push(key, newValue);
+  }
+
+  /** Empties the cache */
+  public void clear() {
+    _entryMap.clear();
+  }
+}

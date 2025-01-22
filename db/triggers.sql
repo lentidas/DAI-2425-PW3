@@ -18,6 +18,8 @@
 
 -- Script that creates the triggers of the SQL database.
 
+SET SEARCH_PATH TO gpg_keyserver;
+
 CREATE OR REPLACE FUNCTION check_key_does_not_belong_to_multiple_users()
    RETURNS TRIGGER
    LANGUAGE plpgsql

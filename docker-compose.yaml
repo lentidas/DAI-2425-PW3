@@ -54,9 +54,9 @@ services:
     restart: unless-stopped
     environment:
       - TZ=Europe/Zurich
-      - POSTGRESQL_USERNAME=gpg-keyserver
+      - POSTGRESQL_USERNAME=gpg_keyserver
       - POSTGRESQL_PASSWORD=password123 # FIXME Change this password
-      - POSTGRESQL_DATABASE=gpg-keyserver-db
+      - POSTGRESQL_DATABASE=gpg_keyserver_db
       - POSTGRESQL_POSTGRES_PASSWORD=root # FIXME Change this password
     ports:
       - 5432:5432

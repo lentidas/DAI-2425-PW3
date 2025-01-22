@@ -18,4 +18,4 @@
 
 -- Script that creates the functions of the SQL database.
 
-
+SET SEARCH_PATH TO gpg_keyserver;

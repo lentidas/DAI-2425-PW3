@@ -31,7 +31,7 @@ Response is in a JSON format.
   {
     "username": "john.doe",
     "user": "John Doe",
-    "email": "john.doe@example.com",
+    "email": ["john.doe@example.com"],
     "key": "-----BEGIN PGP PUBLIC KEY BLOCK-----\n\n[...]\n-----END PGP PUBLIC KEY BLOCK-----"
   },
   {

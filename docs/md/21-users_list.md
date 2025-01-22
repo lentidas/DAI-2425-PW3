@@ -1,6 +1,6 @@
 ## `GET /users`
 
-Allows a client to obtain the list of users that are known by the user.
+Allows a client to obtain the list of users that are known by the server.
 
 ### Parameters
 

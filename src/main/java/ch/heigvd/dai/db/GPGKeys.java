@@ -77,6 +77,34 @@ public class GPGKeys {
   }
 
   /**
+   * Gets a single GPG key from the database.
+   *
+   * @param fingerprint a {@link String} that is the fingerprint of the key
+   * @return a {@link GPGKey} instance, or {@code null} if an error occurred or if the key was not
+   *     found
+   */
+  public GPGKey getOne(String fingerprint) {
+    GPGKey key;
+
+    try (Statement stmt = db.getStatement()) {
+      String query =
+          "SELECT * FROM gpg_keyserver.gpg_keys WHERE fingerprint = '" + fingerprint + "';";
+
+      ResultSet queryResult = stmt.executeQuery(query);
+      if (!queryResult.next()) {
+        return null;
+      }
+
+      key = parseResult(queryResult);
+    } catch (SQLException e) {
+      System.err.println("SQLException: " + e.getMessage());
+      return null;
+    }
+
+    return key;
+  }
+
+  /**
    * Creates a new GPG key in the database.
    *
    * @param key a {@link GPGKey} that is the key to be created

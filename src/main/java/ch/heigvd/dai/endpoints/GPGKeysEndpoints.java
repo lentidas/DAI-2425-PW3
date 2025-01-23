@@ -25,6 +25,7 @@ import io.javalin.config.Key;
 import io.javalin.http.BadRequestResponse;
 import io.javalin.http.ConflictResponse;
 import io.javalin.http.Context;
+import io.javalin.http.NotFoundResponse;
 import java.util.List;
 import org.jetbrains.annotations.NotNull;
 
@@ -71,7 +72,20 @@ public class GPGKeysEndpoints {
     ctx.json(newKey);
   }
 
-  public void getGPGKey(@NotNull Context ctx) {}
+  public void getGPGKey(@NotNull Context ctx) {
+    String fingerprint =
+        ctx.pathParamAsClass("fingerprint", String.class)
+            .check(obj -> obj.length() == 40, "Fingerprint must be 40 characters long")
+            .get();
+
+    final Database database = ctx.appData(new Key<>("database"));
+    GPGKey key = database.getGPGKeys().getOne(fingerprint);
+    if (key == null) {
+      throw new NotFoundResponse();
+    }
+
+    ctx.json(key);
+  }
 
   public void updateGPGKey(@NotNull Context ctx) {
     // TODO Should provide a way to update the key's emails or the key itself

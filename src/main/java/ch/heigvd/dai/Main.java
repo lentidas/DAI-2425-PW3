@@ -7,9 +7,9 @@ import ch.heigvd.dai.db.Database;
 import ch.heigvd.dai.endpoints.*;
 import io.javalin.Javalin;
 import io.javalin.config.Key;
-import java.sql.SQLException;
 import io.javalin.http.ContentType;
 import java.nio.charset.StandardCharsets;
+import java.sql.SQLException;
 
 public class Main {
 
@@ -21,7 +21,9 @@ public class Main {
 
     try {
       // TODO Improve the way we variabilize the database connection parameters
-      db = new Database("localhost", "gpg_keyserver_db", "gpg_keyserver", "password", "gpg_keyserver", 5432);
+      db =
+          new Database(
+              "localhost", "gpg_keyserver_db", "gpg_keyserver", "password", "gpg_keyserver", 5432);
       System.out.println("Connected to database!");
     } catch (SQLException e) {
       System.err.println(e.getMessage());
@@ -31,7 +33,7 @@ public class Main {
     Dummy dummy = new Dummy();
     Users users = new Users();
     GPGKeys gpgKeys = new GPGKeys();
-    
+
     var test = db.users.getAll();
 
     var app =
@@ -99,6 +101,7 @@ public class Main {
             });
 
     app.start(7070);
+    cache.clear();
 
     try {
       db.close();

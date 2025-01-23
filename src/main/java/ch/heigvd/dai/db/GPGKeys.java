@@ -30,7 +30,7 @@ public class GPGKeys {
    * Record that represents a GPG key.
    *
    * @param fingerprint a {@link String} that is the hexadecimal fingerprint of the key
-   * @param key a {@link String} that is the key itself in ASCII armor format
+   * @param key a {@link String} that is the key itself in ASCII-armored format
    */
   public record GPGKey(String fingerprint, String key) {}
 
@@ -74,5 +74,36 @@ public class GPGKeys {
     }
 
     return keys;
+  }
+
+  /**
+   * Creates a new GPG key in the database.
+   *
+   * @param key a {@link GPGKey} that is the key to be created
+   * @return -1 in case of an error, other value if no error
+   */
+  public int createKey(GPGKey key) {
+    try (Statement stmt = db.getStatement()) {
+      StringBuilder query =
+          new StringBuilder("INSERT INTO gpg_keyserver.gpg_keys (fingerprint, key) VALUES (");
+      query.append("'").append(key.fingerprint()).append("', ");
+      query.append("'").append(key.key()).append("');");
+
+      return stmt.executeUpdate(query.toString());
+    } catch (SQLException e) {
+      System.err.println("SQLException: " + e.getMessage());
+      return -1;
+    }
+  }
+
+  /**
+   * Validates a GPG key.
+   *
+   * @param key a {@link String} that is the key to be validated, in ASCII-armored format
+   * @return {@code true} if the key is valid, {@code false} otherwise
+   */
+  public static boolean validateGPGKey(String key) {
+    // TODO Implement this method maybe using BouncyCastle or another library
+    return true;
   }
 }

@@ -19,11 +19,13 @@
 package ch.heigvd.dai.endpoints;
 
 import ch.heigvd.dai.db.Database;
+import ch.heigvd.dai.db.GPGKeys;
 import ch.heigvd.dai.db.GPGKeys.GPGKey;
 import io.javalin.config.Key;
+import io.javalin.http.BadRequestResponse;
+import io.javalin.http.ConflictResponse;
 import io.javalin.http.Context;
 import java.util.List;
-import javax.xml.crypto.Data;
 import org.jetbrains.annotations.NotNull;
 
 public class GPGKeysEndpoints {
@@ -42,7 +44,31 @@ public class GPGKeysEndpoints {
   }
 
   public void addGPGKey(@NotNull Context ctx) {
-    // TODO When adding a GPG key, the email must already exist in the database
+    GPGKey newKey =
+        ctx.bodyValidator(GPGKey.class)
+            .check(obj -> obj.fingerprint() != null, "Fingerprint is required")
+            .check(
+                obj -> obj.fingerprint().length() == 40, "Fingerprint must be 40 characters long")
+            .check(obj -> obj.key() != null, "Key is required")
+            .get();
+
+    if (!GPGKeys.validateGPGKey(newKey.key())) {
+      throw new BadRequestResponse();
+    }
+
+    final Database database = ctx.appData(new Key<>("database"));
+    for (GPGKey key : database.getGPGKeys().getAll()) {
+      if (key.fingerprint().equals(newKey.fingerprint())) {
+        throw new ConflictResponse();
+      }
+    }
+
+    if (database.getGPGKeys().createKey(newKey) == -1) {
+      throw new BadRequestResponse();
+    }
+
+    ctx.status(201);
+    ctx.json(newKey);
   }
 
   public void getGPGKey(@NotNull Context ctx) {}

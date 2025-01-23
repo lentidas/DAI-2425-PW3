@@ -7,6 +7,7 @@ import ch.heigvd.dai.db.Database;
 import ch.heigvd.dai.endpoints.*;
 import io.javalin.Javalin;
 import io.javalin.config.Key;
+import java.sql.SQLException;
 import io.javalin.http.ContentType;
 import java.nio.charset.StandardCharsets;
 
@@ -15,13 +16,22 @@ public class Main {
   public static final int PORT = 7070;
 
   public static void main(String[] args) {
-    Database db = new Database();
+    Database db;
     Cache cache = new Cache();
 
-    Dummy dummy = new Dummy();
+    try {
+      db = new Database("localhost", "bdr", "bdr", "bdr", "gpg_keyserver", 5432);
+      System.out.println("Connected to database!");
+    } catch (SQLException e) {
+      System.err.println(e.getMessage());
+      return;
+    }
 
+    Dummy dummy = new Dummy();
     Users users = new Users();
     GPGKeys gpgKeys = new GPGKeys();
+    
+    var test = db.users.getAll();
 
     var app =
         Javalin.create(
@@ -88,5 +98,12 @@ public class Main {
             });
 
     app.start(7070);
+
+    try {
+      db.close();
+      System.out.println("Connection to database closed!");
+    } catch (SQLException e) {
+      throw new RuntimeException(e);
+    }
   }
 }

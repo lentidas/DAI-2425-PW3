@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.1.4](https://github.com/lentidas/DAI-2425-PW3/compare/v0.1.3...v0.1.4) (2025-01-23)
+
+
+### Continuous Integration
+
+* use my user to solve authentication issue ([032e109](https://github.com/lentidas/DAI-2425-PW3/commit/032e10975cff051b8176f42afca278310078e109))
+
 ## [0.1.3](https://github.com/lentidas/DAI-2425-PW3/compare/v0.1.2...v0.1.3) (2025-01-23)
 
 

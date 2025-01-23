@@ -7,7 +7,5 @@ RUN if [ -d "target" ]; then rm -rf target; fi; \
 
 FROM eclipse-temurin:21-jre
 COPY --from=build /project/target/*.jar /app/gpg-keyserver.jar
-WORKDIR /data
-EXPOSE 1234
+EXPOSE 7070
 ENTRYPOINT ["java", "-jar", "/app/gpg-keyserver.jar"]
-CMD ["--help"]

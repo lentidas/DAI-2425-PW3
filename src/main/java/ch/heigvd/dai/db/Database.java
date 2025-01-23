@@ -46,6 +46,14 @@ public class Database {
       String host, String database, String username, String password, String schema, int port)
       throws SQLException {
 
+    if (host == null
+        || database == null
+        || username == null
+        || password == null
+        || schema == null) {
+      throw new IllegalArgumentException("All database parameters must be non-null");
+    }
+
     String connectionString = String.format("jdbc:postgresql://%s:%s/%s", host, port, database);
     connection = DriverManager.getConnection(connectionString, username, password);
     this.schema = schema;

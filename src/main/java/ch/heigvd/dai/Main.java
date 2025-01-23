@@ -32,6 +32,7 @@ public class Main {
 
     Dummy dummy = new Dummy();
     UsersEndpoint users = new UsersEndpoint();
+    EmailsEndpoint emails = new EmailsEndpoint();
     GPGKeysEndpoints gpgKeys = new GPGKeysEndpoints();
 
     // TODO Remove this line after testing the database connection
@@ -79,6 +80,23 @@ public class Main {
                                       put(users::updateUserEmail);
                                       delete(users::deleteUserEmail);
                                     });
+                              });
+                        });
+                  });
+
+              // Configure the API routes for the /emails domain.
+              config.router.apiBuilder(
+                  () -> {
+                    path(
+                        "/emails",
+                        () -> {
+                          get(emails::getEmails);
+                          path(
+                              "/{username}",
+                              () -> {
+                                post(emails::addUserEmail);
+                                get(emails::getUserEmails);
+                                delete(emails::deleteUserEmail);
                               });
                         });
                   });

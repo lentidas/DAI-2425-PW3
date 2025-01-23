@@ -28,6 +28,7 @@ public class Database {
   private final Connection connection;
   final String schema;
   private final Users users;
+  private final GPGKeys gpgKeys;
 
   /**
    * Initiates a connection to a PostgresSQL database
@@ -50,6 +51,7 @@ public class Database {
     connection.setCatalog(schema);
 
     users = new Users(this);
+    gpgKeys = new GPGKeys(this);
     // TODO Add remaining controllers
   }
 
@@ -59,6 +61,10 @@ public class Database {
 
   public Users getUsers() {
     return users;
+  }
+
+  public GPGKeys getGPGKeys() {
+    return gpgKeys;
   }
 
   public void close() throws SQLException {

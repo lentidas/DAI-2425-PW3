@@ -18,15 +18,27 @@
 
 package ch.heigvd.dai.endpoints;
 
+import ch.heigvd.dai.db.Database;
+import ch.heigvd.dai.db.GPGKeys.GPGKey;
+import io.javalin.config.Key;
 import io.javalin.http.Context;
+import java.util.List;
+import javax.xml.crypto.Data;
 import org.jetbrains.annotations.NotNull;
 
-public class GPGKeys {
+public class GPGKeysEndpoints {
 
-  public GPGKeys() {}
+  public GPGKeysEndpoints() {}
 
   public void getGPGKeys(@NotNull Context ctx) {
-    // TODO Should provide a way to filter the keys by email or fingerprint (maybe username?)
+    final Database database = ctx.appData(new Key<>("database"));
+    List<GPGKey> keys;
+
+    keys = database.getGPGKeys().getAll();
+
+    // TODO Probably catch the null case and return a proper HTTP status code (maybe send a 204?)
+
+    ctx.json(keys);
   }
 
   public void addGPGKey(@NotNull Context ctx) {

@@ -32,7 +32,7 @@ public class Main {
 
     Dummy dummy = new Dummy();
     UsersEndpoint users = new UsersEndpoint();
-    GPGKeys gpgKeys = new GPGKeys();
+    GPGKeysEndpoints gpgKeys = new GPGKeysEndpoints();
 
     // TODO Remove this line after testing the database connection
     // var test = db.users.getAll();

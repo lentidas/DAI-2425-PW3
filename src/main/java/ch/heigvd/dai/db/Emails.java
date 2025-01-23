@@ -22,6 +22,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
+import org.apache.commons.validator.routines.EmailValidator;
 
 public class Emails {
 
@@ -66,7 +67,7 @@ public class Emails {
     ArrayList<Email> emails = new ArrayList<>();
 
     try (Statement stmt = _db.getStatement()) {
-      String query = "select * from gpg_keyserver.emails;";
+      String query = "select * from " + _db.schema + ".emails;";
 
       ResultSet queryResult = stmt.executeQuery(query);
       while (queryResult.next()) {
@@ -90,7 +91,7 @@ public class Emails {
     Email found_email;
 
     try (Statement stmt = _db.getStatement()) {
-      String query = "select * from gpg_keyserver.emails" + " where email = '" + email + "';";
+      String query = "select * from " + _db.schema + ".emails" + " where email = '" + email + "';";
 
       ResultSet queryResult = stmt.executeQuery(query);
       if (!queryResult.next()) {
@@ -115,7 +116,8 @@ public class Emails {
     ArrayList<Email> emails = new ArrayList<>();
 
     try (Statement stmt = _db.getStatement()) {
-      String query = "select * from gpg_keyserver.emails" + " where username = '" + username + "';";
+      String query =
+          "select * from " + _db.schema + ".emails" + " where username = '" + username + "';";
 
       ResultSet queryResult = stmt.executeQuery(query);
       while (queryResult.next()) {
@@ -127,5 +129,83 @@ public class Emails {
     }
 
     return emails.toArray(new Email[0]);
+  }
+
+  /**
+   * Checks whether the provided username already has the provided email associated to them
+   *
+   * @param username Username to use for query
+   * @param email Email to check
+   * @return True if email is associated to user, false if not or if an error occurred
+   */
+  public boolean userHasEmail(String username, String email) {
+    boolean found = false;
+
+    try (Statement stmt = _db.getStatement()) {
+      String query =
+          "select * from " + _db.schema + ".emails" + " where username = '" + username + "';";
+
+      ResultSet queryResult = stmt.executeQuery(query);
+      while (queryResult.next()) {
+        if (parseResult(queryResult).email.equals(email)) {
+          found = true;
+          break;
+        }
+      }
+    } catch (SQLException e) {
+      System.err.println("SQLException: " + e.getMessage());
+    }
+
+    return found;
+  }
+
+  /**
+   * Associates the provided email to the provided user
+   *
+   * @param email Email model object to use for query
+   * @return -1 if an error occurred, or 0 if successful
+   */
+  public int addToUser(Email email) {
+    try (Statement stmt = _db.getStatement()) {
+      String query =
+          "insert into "
+              + _db.schema
+              + ".emails (email, username) values ('"
+              + email.email()
+              + "', '"
+              + email.username()
+              + "');";
+      return stmt.executeUpdate(query);
+    } catch (SQLException e) {
+      System.err.println("SQLException: " + e.getMessage());
+      return -1;
+    }
+  }
+
+  /**
+   * Detaches the provided email from its user. Function does not check whether email is associated
+   * to the user that the caller wants to detach the email from
+   *
+   * @param email Email to detach
+   * @return -1 if an error occurred, or 0 if successful
+   */
+  public int detach(String email) {
+    try (Statement stmt = _db.getStatement()) {
+      String query = "delete from " + _db.schema + ".emails where email = '" + email + "');";
+      return stmt.executeUpdate(query);
+    } catch (SQLException e) {
+      System.err.println("SQLException: " + e.getMessage());
+      return -1;
+    }
+  }
+
+  /**
+   * Validates an email address.
+   *
+   * @param email a {@link String} with the email to validate
+   * @return {@code true} if the email address is valid, {@code false} otherwise
+   */
+  public static boolean validateEmailAddress(String email) {
+    return EmailValidator.getInstance().isValid(email);
   }
 }

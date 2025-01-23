@@ -29,6 +29,7 @@ public class Database {
   final String schema;
   private final Users users;
   private final GPGKeys gpgKeys;
+  private final Emails emails;
 
   /**
    * Initiates a connection to a PostgresSQL database
@@ -52,7 +53,7 @@ public class Database {
 
     users = new Users(this);
     gpgKeys = new GPGKeys(this);
-    // TODO Add remaining controllers
+    emails = new Emails(this);
   }
 
   Statement getStatement() throws SQLException {
@@ -65,6 +66,10 @@ public class Database {
 
   public GPGKeys getGPGKeys() {
     return gpgKeys;
+  }
+
+  public Emails getEmails() {
+    return emails;
   }
 
   public void close() throws SQLException {

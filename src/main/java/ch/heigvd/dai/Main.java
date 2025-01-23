@@ -102,7 +102,7 @@ public class Main {
                   });
             });
 
-    app.start(7070);
+    app.start(PORT);
 
     // FIXME See if we need to close the database connection or simply quitting the application
     //  should suffice. Leaving this here would close the database although the application

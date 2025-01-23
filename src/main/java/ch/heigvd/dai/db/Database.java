@@ -25,9 +25,11 @@ import java.sql.Statement;
 
 public class Database {
 
-  private final Connection _connection;
+  private final Connection connection;
   final String schema;
-  public final Users users;
+  private final Users users;
+  private final GPGKeys gpgKeys;
+  private final Emails emails;
 
   /**
    * Initiates a connection to a PostgresSQL database
@@ -45,18 +47,32 @@ public class Database {
       throws SQLException {
 
     String connectionString = String.format("jdbc:postgresql://%s:%s/%s", host, port, database);
-    _connection = DriverManager.getConnection(connectionString, username, password);
+    connection = DriverManager.getConnection(connectionString, username, password);
     this.schema = schema;
-    _connection.setCatalog(schema);
+    connection.setCatalog(schema);
 
     users = new Users(this);
+    gpgKeys = new GPGKeys(this);
+    emails = new Emails(this);
   }
 
   Statement getStatement() throws SQLException {
-    return _connection.createStatement();
+    return connection.createStatement();
+  }
+
+  public Users getUsers() {
+    return users;
+  }
+
+  public GPGKeys getGPGKeys() {
+    return gpgKeys;
+  }
+
+  public Emails getEmails() {
+    return emails;
   }
 
   public void close() throws SQLException {
-    _connection.close();
+    connection.close();
   }
 }

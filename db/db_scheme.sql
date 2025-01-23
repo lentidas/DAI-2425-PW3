@@ -39,7 +39,7 @@ CREATE TABLE IF NOT EXISTS emails
    email    VARCHAR(64),
    username VARCHAR(32),
    PRIMARY KEY (email),
-   FOREIGN KEY (username) REFERENCES users (username)
+   FOREIGN KEY (username) REFERENCES users (username) ON DELETE CASCADE ON UPDATE CASCADE
 );
 
 COMMENT ON COLUMN gpg_keyserver.emails.email IS 'E-mail address of the user';
@@ -60,8 +60,8 @@ CREATE TABLE IF NOT EXISTS gpg_keys_emails
    fingerprint CHAR(40)    NOT NULL,
    email       VARCHAR(64) NOT NULL,
    PRIMARY KEY (fingerprint, email),
-   FOREIGN KEY (fingerprint) REFERENCES gpg_keys (fingerprint),
-   FOREIGN KEY (email) REFERENCES emails (email)
+   FOREIGN KEY (fingerprint) REFERENCES gpg_keys (fingerprint) ON DELETE CASCADE,
+   FOREIGN KEY (email) REFERENCES emails (email) ON DELETE CASCADE ON UPDATE CASCADE
 );
 
 COMMENT ON COLUMN gpg_keyserver.gpg_keys_emails.fingerprint IS 'Fingerprint of the GPG key associated with the e-mail';

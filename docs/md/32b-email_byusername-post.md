@@ -1,47 +1,45 @@
-## `POST /email/by-username/{username}`
+## `POST /emails/{username}`
 
-Associates an email address to a user
+Associates an email address to a user.
 
 ### Parameters
 
-| Parameter  | Optional?    | Description                       |
-|------------|--------------|-----------------------------------|
-| `username` |              | Username to associate an email to |
-| `email`    |              | Email to associate to user        |
+| Parameter  | Optional?    | Description                     |
+|------------|--------------|---------------------------------|
+| `username` |              | Username to associate email to. |
+
+### Request
+
+The request body must contain a JSON object with the following fields:
+
+- `email`: user's email address
 
 ### Responses
 
-- `200`: Request was successful
-- `400`: Invalid username (malformed username)
-- `404`: Unknown username
-- `410`: Email address has already been associated to a user
+- `201`: association created
+- `400`: invalid username (malformed username)
+- `404`: unknown username
+- `409`: email address has already been associated to a user
 
-Response is in the form of a JSON dictionary. The dictionary is empty on successful requests. It contains the error message in case of an unsuccessful request:
-
-```json
-{
-  "error": "Error message"
-}
-```
-
+Only a status code with an empty body is returned.
 
 ### Example with a valid username and email
 
 **Request**:
 
 ```
-POST /email/by-username/john.doe
+POST /emails/john.doe
 [...]
 
-email:john.doe@example.com
+{
+  "email": "john.doe@example.com"
+}
 ```
 
 **Response**:
 
 ```
 200 OK
-
-{}
 ```
 
 ### Example with an invalid username
@@ -49,20 +47,18 @@ email:john.doe@example.com
 **Request**:
 
 ```
-POST /email/by-username/malf:or$med
+POST /emails/malf:or$med
 [...]
 
-email:john.doe@example.com
+{
+  "email": "john.doe@example.com"
+}
 ```
 
 **Response**:
 
 ```
-400 BAD
-
-{
-    "error": "Invalid username"
-}
+400 Bad Request
 ```
 
 ### Example with an invalid email address
@@ -70,20 +66,18 @@ email:john.doe@example.com
 **Request**:
 
 ```
-POST /email/by-username/john.doe
+POST /emails/john.doe
 [...]
 
-email:john.doe@
+{
+  "email": "john.doe@"
+}
 ```
 
 **Response**:
 
 ```
-400 BAD
-
-{
-    "error": "Invalid email address"
-}
+400 Bad Request
 ```
 
 ### Example with an unknown user
@@ -91,20 +85,18 @@ email:john.doe@
 **Request**:
 
 ```
-POST /email/by-username/unknown.user
+POST /emails/unknown.user
 [...]
 
-email:john.doe@example.com
+{
+  "email": "john.doe@example.com"
+}
 ```
 
 **Response**:
 
 ```
-404 NOT FOUND
-
-{
-    "error": "Invalid username"
-}
+404 Not Found
 ```
 
 ### Example with an email that's already been attached to another user
@@ -112,18 +104,16 @@ email:john.doe@example.com
 **Request**:
 
 ```
-POST /email/by-username/john.doe
+POST /emails/john.doe
 [...]
 
-email:jane.doe@example.com
+{
+  "email": "john.doe@example.com"
+}
 ```
 
 **Response**:
 
 ```
-410 CONFLICT
-
-{
-    "error": "Email address has already been attached to another user"
-}
+409 Conflict
 ```

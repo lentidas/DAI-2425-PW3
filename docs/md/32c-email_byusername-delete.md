@@ -1,123 +1,124 @@
-## `DELETE /email/by-username/{username}`
+## `DELETE /emails/{username}`
 
-Detaches an email address to a user. This also removes any key - email pairs for keys that are no longer attached to any email address.
+Detaches an email address from a user. This also removes any key - email pairs for keys that are no longer attached to any email address.
 
 ### Parameters
 
-| Parameter  | Optional?    | Description                      |
-|------------|--------------|----------------------------------|
-| `username` |              | Username to detach an email from |
-| `email`    |              | Email to detach from user        |
+| Parameter  | Optional?    | Description                       |
+|------------|--------------|-----------------------------------|
+| `username` |              | Username to detach an email from. |
+
+### Request
+
+The request body must contain a JSON object with the following fields:
+
+- `email`: user's email address to be deleted
 
 ### Responses
 
-- `200`: Request was successful
+- `204`: Email has been detached from user
 - `400`: Invalid username (malformed username)
 - `404`: Unknown username or email address is not attached to user
 
-Response is in the form of a JSON dictionary. The dictionary is empty on successful requests. It contains the error message in case of an unsuccessful request:
-
-```json
-{
-  "error": "Error message"
-}
-```
-
+Only a status code with an empty body is returned.
 
 ### Example with a valid username and email
 
 **Request**:
 
-```DELETE /email/by-username/john.doe
+```
+DELETE /emails/john.doe
 [...]
 
-email:john.doe@example.com
+{
+  "email": "john.doe@example.com"
+}
 ```
 
 **Response**:
 
-```
-200 OK
-
-{}
-```
+`204 NO CONTENT`
 
 ### Example with an invalid username
 
 **Request**:
 
-`DELETE /email/by-username/malf:or$med
+```
+DELETE /emails/malf:or$med
 [...]
 
-email:john.doe@example.com
-`
+{
+  "email": "john.doe@example.com"
+}
+```
 
 **Response**:
 
-```
-400 BAD
+`400 BAD`
 
-{
-    "error": "Invalid username"
-}
+```
+Bad Request
 ```
 
 ### Example with an invalid email address
 
 **Request**:
 
-`DELETE /email/by-username/john.doe
+```
+DELETE /emails/john.doe
 [...]
 
-email:john.doe@
-`
+{
+  "email": "john.doe@"
+}
+```
 
 **Response**:
 
-```
-400 BAD
+`400 BAD`
 
-{
-    "error": "Invalid email address"
-}
+```
+Bad Request
 ```
 
 ### Example with an unknown user
 
 **Request**:
 
-`DELETE /email/by-username/unknown.user
+```
+DELETE /emails/unknown.user
 [...]
 
-email:john.doe@example.com
-`
+{
+  "email": "john.doe@example.com"
+}
+```
 
 **Response**:
 
-```
-404 NOT FOUND
+`404 NOT FOUND`
 
-{
-    "error": "Invalid username"
-}
+```
+Not Found
 ```
 
 ### Example with an email that's not attached to the user
 
 **Request**:
 
-`DELETE /email/by-username/john.doe
+```
+DELETE /emails/john.doe
 [...]
 
-email:jane.doe@example.com
-`
+{
+  "email": "jane.doe@example.com"
+}
+```
 
 **Response**:
 
-```
-404 NOT FOUND
+`404 NOT FOUND`
 
-{
-    "error": "Email is not attached to user"
-}
+```
+Bad Request
 ```

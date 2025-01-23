@@ -1,16 +1,16 @@
 ## `GET /emails`
 
-Allows a client to obtain the list of all or part of all known emails
+Allows a client to obtain the list of all or part of all known emails.
 
 ### Parameters
 
-Endpoint does not take any parameters.
+No HTTP path or query parameters are needed.
 
 ### Responses
 
 Server always replies with `200` to indicate the list retrieved successfully, even if no emails are known.
 
-Response if in a JSON list format like the one below:
+Response is in a JSON list format like the one below:
 
 ```json
 [

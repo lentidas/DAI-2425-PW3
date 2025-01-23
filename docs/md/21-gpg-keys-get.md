@@ -1,10 +1,10 @@
-## `GET /gpg/list`
+## `GET /gpg-keys`
 
-Shows a list of all stored public GPG keys, along with the user and email they belong to.
+Shows a list of all stored public GPG keys, along with the respective fingerprint.
 
 ### Parameters
 
-This endpoint does not take any parameters.
+No HTTP path or query parameters are needed.
 
 ### Responses
 
@@ -14,7 +14,7 @@ Response is in a JSON format. Example request and response is:
 
 **Request**:
 
-`GET /gpg/list`
+`GET /gpg-keys`
 
 **Response**:
 
@@ -23,15 +23,11 @@ Response is in a JSON format. Example request and response is:
 ```json
 [
   {
-    "username": "john.doe",
-    "user": "John Doe",
-    "email": "john.doe@example.com",
+    "fingerprint": "AABBCCDDEEFFGGHHIIJJKKLLMMNNOOPPQQRRSSTT",
     "key": "-----BEGIN PGP PUBLIC KEY BLOCK-----\n\n[...]\n-----END PGP PUBLIC KEY BLOCK-----"
   },
   {
-    "username": "jane.doe",
-    "user": "Jane Doe",
-    "email": "jane.doe@example.com",
+    "fingerprint": "UUVVWWXXYYZZ00112233445566778899AABBCCDD",
     "key": "-----BEGIN PGP PUBLIC KEY BLOCK-----\n\n[...]\n-----END PGP PUBLIC KEY BLOCK-----"
   }
 ]

@@ -8,11 +8,11 @@ A description of this endpoint will be available here. The requirements are list
 
 ### Parameters
 
-The table below lists all the mandatory and optional requirements, with a brief description of each one of them
+The table below lists all the mandatory and optional requirements, with a brief description of each one of them. **Typically, a path parameter is mandatory, while query parameters are optional.**
 
-| Parameter  | Optional?    | Description                                                        |
-|------------|--------------|--------------------------------------------------------------------|
-| `username` | $\checkmark$ | Username to be used for this dummy request. Does not affect output |
+| Parameter  | Optional?    | Description                                                         |
+|------------|--------------|---------------------------------------------------------------------|
+| `username` | $\checkmark$ | Username to be used for this dummy request. Does not affect output. |
 
 
 ### Responses

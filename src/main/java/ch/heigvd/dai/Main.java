@@ -72,6 +72,7 @@ public class Main {
                                 get(users::getUser);
                                 put(users::updateUser);
                                 delete(users::deleteUser);
+
                                 path(
                                     "/{email-id}",
                                     () -> {

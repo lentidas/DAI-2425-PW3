@@ -19,6 +19,7 @@
 package ch.heigvd.dai.endpoints;
 
 import ch.heigvd.dai.db.Database;
+import ch.heigvd.dai.db.Users;
 import ch.heigvd.dai.db.Users.User;
 import io.javalin.config.Key;
 import io.javalin.http.BadRequestResponse;
@@ -56,21 +57,22 @@ public class UsersEndpoint {
   }
 
   public void getUser(@NotNull Context ctx) {
-    final Database database = ctx.appData(new Key<>("database"));
-
     String username = ctx.pathParamAsClass("username", String.class).get();
-    User user = database.getUsers().getOne(username);
 
+    if (!Users.validateUsername(username)) {
+      throw new BadRequestResponse();
+    }
+
+    final Database database = ctx.appData(new Key<>("database"));
+    User user = database.getUsers().getOne(username);
     if (user == null) {
       throw new NotFoundResponse();
-    } else {
-      ctx.json(user);
     }
+
+    ctx.json(user);
   }
 
   public void createUser(@NotNull Context ctx) {
-    final Database database = ctx.appData(new Key<>("database"));
-
     User newUser =
         ctx.bodyValidator(User.class)
             .check(obj -> obj.username() != null, "Missing username")
@@ -78,10 +80,11 @@ public class UsersEndpoint {
             .check(obj -> obj.lastName() != null, "Missing last name")
             .get();
 
-    if (!newUser.username().matches("^[a-zA-Z0-9._-]{3,32}$")) {
+    if (!Users.validateUsername(newUser.username())) {
       throw new BadRequestResponse();
     }
 
+    final Database database = ctx.appData(new Key<>("database"));
     for (User user : database.getUsers().getAll()) {
       if (user.username().equals(newUser.username())) {
         throw new ConflictResponse();
@@ -90,7 +93,7 @@ public class UsersEndpoint {
 
     User user = new User(newUser.username(), newUser.firstName(), newUser.lastName());
 
-    if(database.getUsers().createUser(user) == -1) {
+    if (database.getUsers().createUser(user) == -1) {
       throw new BadRequestResponse();
     }
 
@@ -103,10 +106,23 @@ public class UsersEndpoint {
   }
 
   public void deleteUser(@NotNull Context ctx) {
-    // TODO
+    String username = ctx.pathParamAsClass("username", String.class).get();
 
-    // TODO Do not forget that this should cascade and delete all the related data of the user from
-    //  the database
+    if (!Users.validateUsername(username)) {
+      throw new BadRequestResponse();
+    }
+
+    final Database database = ctx.appData(new Key<>("database"));
+    User user = database.getUsers().getOne(username);
+    if (user == null) {
+      throw new NotFoundResponse();
+    }
+
+    if (database.getUsers().deleteUser(user) == -1) {
+      throw new BadRequestResponse();
+    } else {
+      ctx.json(user);
+    }
   }
 
   public void updateUserEmail(@NotNull Context ctx) {

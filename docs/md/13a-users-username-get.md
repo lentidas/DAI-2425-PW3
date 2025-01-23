@@ -13,6 +13,7 @@ Allows a client to obtain information about the provided user.
 The server returns the following status codes:
 
 - `200`: user was found
+- `400`: username is malformed
 - `404`: user does not exist
 
 When successful, it returns a JSON object containing the user's information:
@@ -45,11 +46,22 @@ GET /user/john.doe
 }
 ```
 
+### Example with malformed username
+
+```
+GET /users/malf:or$med
+```
+
+**Response**:
+
+```
+400 Bad Request
+```
 
 ### Example with username that doesn't exist
 
 ```
-GET /user/by-username/unknown.user
+GET /users/unknown.user
 ```
 
 **Response**:

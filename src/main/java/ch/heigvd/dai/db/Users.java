@@ -208,12 +208,16 @@ public class Users {
   public int deleteUser(User user) {
     try (Statement stmt = db.getStatement()) {
       String query =
-          "delete from gpg_keyserver.users" + " where username = '" + user.username + "';";
+          "DELETE FROM gpg_keyserver.users" + " WHERE username = '" + user.username + "';";
 
       return stmt.executeUpdate(query);
     } catch (SQLException e) {
       System.err.println("SQLException: " + e.getMessage());
       return -1;
     }
+  }
+
+  public static boolean validateUsername(String username) {
+    return username.matches("^[a-zA-Z0-9._-]{3,32}$");
   }
 }

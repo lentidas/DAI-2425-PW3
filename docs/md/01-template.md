@@ -6,7 +6,7 @@ This section contains the template that is used in the endpoints list section. I
 
 A description of this endpoint will be available here. The requirements are listed in this description, as well as what its goal is.
 
-### Parameters
+### Query parameters
 
 The table below lists all the mandatory and optional requirements, with a brief description of each one of them
 

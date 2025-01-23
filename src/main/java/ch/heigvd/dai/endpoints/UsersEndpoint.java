@@ -18,21 +18,35 @@
 
 package ch.heigvd.dai.endpoints;
 
-import ch.heigvd.dai.objects.User;
+import ch.heigvd.dai.db.Database;
+import ch.heigvd.dai.db.Users.User;
+import io.javalin.config.Key;
 import io.javalin.http.Context;
+import java.util.List;
 import org.jetbrains.annotations.NotNull;
 
-public class Users {
+public class UsersEndpoint {
 
-  public Users() {}
+  public UsersEndpoint() {}
 
   public void getUsers(@NotNull Context ctx) {
     // TODO
+    final Database database = ctx.appData(new Key<>("database"));
+    List<User> users;
 
-    User user = new User("lentidas", "Gonçalo", "Heleno");
+    String firstName = ctx.queryParam("firstName");
+    String lastName = ctx.queryParam("lastName");
 
-    ctx.json(user);
+    if (firstName == null && lastName == null) {
+      users = database.getUsers().getAll();
+    } else {
+      users = database.getUsers().search(firstName, lastName);
+    }
 
+    ctx.json(users);
+
+    // FIXME Consider how to better set the content type to JSON with UTF-8 encoding because the
+    //  default Content-Type is overridden by the .json() method.
     // Set content type to JSON with UTF-8 encoding to avoid problems with special characters,
     // because the .json() method does not allow setting the charset.
     // ctx.contentType(ContentType.APPLICATION_JSON + "; charset=" + StandardCharsets.UTF_8.name());

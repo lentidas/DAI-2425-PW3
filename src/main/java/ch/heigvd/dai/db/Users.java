@@ -22,53 +22,54 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
+import java.util.List;
 
 public class Users {
 
   /**
-   * Record that holds all the information about a user
+   * Record that holds all the information about a user.
    *
-   * @param username Username
-   * @param first_name User's first name
-   * @param last_name User's last name
+   * @param username a {@link String} with the user's username
+   * @param firstName a {@link String} with the user's first name
+   * @param lastName a {@link String} with the user's last name
    */
-  public record User(String username, String first_name, String last_name) {}
+  public record User(String username, String firstName, String lastName) {}
 
-  private final Database _db;
+  private final Database db;
 
   /**
-   * Creates a new users table instance
+   * Default constructor to create a new {@link Users} table instance.
    *
    * @param ownerDb Owner database instance
    */
   public Users(Database ownerDb) {
-    _db = ownerDb;
+    db = ownerDb;
   }
 
   /**
    * Extracts all needed information from ResultSet to for a User instance
    *
    * @param rs Result set to extract information from
-   * @return User instance
+   * @return a record of type {@link User} with the extracted information
    * @throws SQLException Raised if one or more of the columns hasn't been found
    */
   private User parseResult(ResultSet rs) throws SQLException {
     String username = rs.getString("username");
-    String first_name = rs.getString("first_name");
-    String last_name = rs.getString("last_name");
-    return new User(username, first_name, last_name);
+    String firstName = rs.getString("first_name");
+    String lastName = rs.getString("last_name");
+    return new User(username, firstName, lastName);
   }
 
   /**
-   * Gets all users from the database
+   * Gets all users from the database.
    *
-   * @return A list of users, or null if an error occurred
+   * @return a {@link List} of {@link User} instances, or {@code null} if an error occurred
    */
-  public User[] getAll() {
+  public List<User> getAll() {
     ArrayList<User> users = new ArrayList<>();
 
-    try (Statement stmt = _db.getStatement()) {
-      String query = "select * from gpg_keyserver.users;";
+    try (Statement stmt = db.getStatement()) {
+      String query = "SELECT * FROM gpg_keyserver.users;";
 
       ResultSet queryResult = stmt.executeQuery(query);
       while (queryResult.next()) {
@@ -79,20 +80,61 @@ public class Users {
       return null;
     }
 
-    return users.toArray(new User[0]);
+    return users;
   }
 
   /**
-   * Gets a user, based on their username
+   * Searches for a user in the database using their first or last names.
    *
-   * @param username Username to find
-   * @return User's instance, or null if an error occurred
+   * @param firstName
+   * @param lastName
+   * @return
+   */
+  public List<User> search(String firstName, String lastName) {
+    // If all parameters are null, return null, because the query cannot work with null String
+    // values.
+    if (firstName == null && lastName == null) {
+      return null;
+    }
+
+    ArrayList<User> users = new ArrayList<>();
+
+    try (Statement stmt = db.getStatement()) {
+      StringBuilder query = new StringBuilder("SELECT * FROM gpg_keyserver.users WHERE ");
+
+      if (firstName != null) {
+        query.append("first_name iLIKE '%").append(firstName).append("%'");
+        if (lastName != null) {
+          query.append(" AND ");
+        }
+      }
+      if (lastName != null) {
+        query.append("last_name iLIKE '%").append(lastName).append("%'");
+      }
+
+      ResultSet queryResult = stmt.executeQuery(query.toString());
+      while (queryResult.next()) {
+        users.add(parseResult(queryResult));
+      }
+    } catch (SQLException e) {
+      System.err.println("SQLException: " + e.getMessage());
+      return null;
+    }
+
+    return users;
+  }
+
+  /**
+   * Gets a specific user from the database using their username.
+   *
+   * @param username a {@link String} with the user's username
+   * @return a {@link User} instance, or {@code null} if an error occurred or if no user was found
    */
   public User getOne(String username) {
     User user;
 
-    try (Statement stmt = _db.getStatement()) {
-      String query = "select * from gpg_keyserver.users where username = '" + username + "';";
+    try (Statement stmt = db.getStatement()) {
+      String query = "SELECT * FROM gpg_keyserver.users WHERE username = '" + username + "';";
 
       ResultSet queryResult = stmt.executeQuery(query);
       if (!queryResult.next()) {
@@ -115,15 +157,15 @@ public class Users {
    * @return -1 in case of an error, other value if no error
    */
   public int createUser(User user) {
-    try (Statement stmt = _db.getStatement()) {
+    try (Statement stmt = db.getStatement()) {
       String query =
           "insert into gpg_keyserver.users"
               + "('"
               + user.username
               + "','"
-              + user.first_name
+              + user.firstName
               + "','"
-              + user.last_name
+              + user.lastName
               + "');";
 
       return stmt.executeUpdate(query);
@@ -140,14 +182,14 @@ public class Users {
    * @return -1 in case of an error, other value if no error
    */
   public int updateUser(User user) {
-    try (Statement stmt = _db.getStatement()) {
+    try (Statement stmt = db.getStatement()) {
       String query =
           "update gpg_keyserver.users"
               + " set first_name = '"
-              + user.first_name
+              + user.firstName
               + "'"
               + " set last_name = '"
-              + user.last_name
+              + user.lastName
               + "'"
               + " where username = '"
               + user.username
@@ -167,7 +209,7 @@ public class Users {
    * @return -1 in case of an error, other value if no error
    */
   public int deleteUser(User user) {
-    try (Statement stmt = _db.getStatement()) {
+    try (Statement stmt = db.getStatement()) {
       String query =
           "delete from gpg_keyserver.users" + " where username = '" + user.username + "';";
 

@@ -151,24 +151,21 @@ public class Users {
   }
 
   /**
-   * Creates a new user row
+   * Creates a new user row.
    *
    * @param user User to insert into database
    * @return -1 in case of an error, other value if no error
    */
   public int createUser(User user) {
     try (Statement stmt = db.getStatement()) {
-      String query =
-          "insert into gpg_keyserver.users"
-              + "('"
-              + user.username
-              + "','"
-              + user.firstName
-              + "','"
-              + user.lastName
-              + "');";
+      StringBuilder query =
+          new StringBuilder(
+              "INSERT INTO gpg_keyserver.users (username, first_name, last_name) VALUES (");
+      query.append("'").append(user.username).append("', ");
+      query.append("'").append(user.firstName).append("', ");
+      query.append("'").append(user.lastName).append("');");
 
-      return stmt.executeUpdate(query);
+      return stmt.executeUpdate(query.toString());
     } catch (SQLException e) {
       System.err.println("SQLException: " + e.getMessage());
       return -1;

@@ -21,6 +21,8 @@ package ch.heigvd.dai.endpoints;
 import ch.heigvd.dai.db.Database;
 import ch.heigvd.dai.db.Users.User;
 import io.javalin.config.Key;
+import io.javalin.http.BadRequestResponse;
+import io.javalin.http.ConflictResponse;
 import io.javalin.http.Context;
 import io.javalin.http.NotFoundResponse;
 import java.util.List;
@@ -67,7 +69,33 @@ public class UsersEndpoint {
   }
 
   public void createUser(@NotNull Context ctx) {
-    // TODO
+    final Database database = ctx.appData(new Key<>("database"));
+
+    User newUser =
+        ctx.bodyValidator(User.class)
+            .check(obj -> obj.username() != null, "Missing username")
+            .check(obj -> obj.firstName() != null, "Missing first name")
+            .check(obj -> obj.lastName() != null, "Missing last name")
+            .get();
+
+    if (!newUser.username().matches("^[a-zA-Z0-9._-]{3,32}$")) {
+      throw new BadRequestResponse();
+    }
+
+    for (User user : database.getUsers().getAll()) {
+      if (user.username().equals(newUser.username())) {
+        throw new ConflictResponse();
+      }
+    }
+
+    User user = new User(newUser.username(), newUser.firstName(), newUser.lastName());
+
+    if(database.getUsers().createUser(user) == -1) {
+      throw new BadRequestResponse();
+    }
+
+    ctx.status(201);
+    ctx.json(user);
   }
 
   public void updateUser(@NotNull Context ctx) {

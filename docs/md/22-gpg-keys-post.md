@@ -39,9 +39,9 @@ POST /gpg-keys
 
 **Response**:
 
-```
-201 Created
+`201 Created`
 
+```
 {
     "fingerprint": "AABBCCDDEEFFGGHHIIJJKKLLMMNNOOPPQQRRSSTT",
     "key": "-----BEGIN PG PUBLIC KEY BLOCK-----\n\n[...]\n-----END PGP PUBLIC KEY BLOCK-----"

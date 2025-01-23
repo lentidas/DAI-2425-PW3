@@ -96,9 +96,9 @@ public class Users {
   /**
    * Searches for a user in the database using their first or last names.
    *
-   * @param firstName
-   * @param lastName
-   * @return
+   * @param firstName a {@link String} with the user's first name
+   * @param lastName a {@link String} with the user's last name
+   * @return a {@link List} of {@link User} instances, or {@code null} if an error occurred
    */
   public List<User> search(String firstName, String lastName) {
     // If all parameters are null, return null, because the query cannot work with null String

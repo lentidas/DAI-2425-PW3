@@ -93,14 +93,12 @@ public class UsersEndpoint {
       }
     }
 
-    User user = new User(newUser.username(), newUser.firstName(), newUser.lastName());
-
-    if (database.getUsers().createUser(user) == -1) {
+    if (database.getUsers().createUser(newUser) == -1) {
       throw new BadRequestResponse();
     }
 
     ctx.status(201);
-    ctx.json(user);
+    ctx.json(newUser);
   }
 
   public void updateUser(@NotNull Context ctx) {

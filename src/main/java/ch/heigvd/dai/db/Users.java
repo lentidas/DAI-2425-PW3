@@ -35,6 +35,17 @@ public class Users {
    */
   public record User(String username, String firstName, String lastName) {}
 
+  /**
+   * Record that holds all the information about a user, except the username.
+   *
+   * <p>Used in special cases, like when updating the user's information.
+   *
+   * @param firstName a {@link String} with the user's first name
+   * @param lastName a {@link String} with the user's last name
+   * @return
+   */
+  public record UserWithoutUsername(String firstName, String lastName) {}
+
   private final Database db;
 
   /**
@@ -173,26 +184,19 @@ public class Users {
   }
 
   /**
-   * Updates an existing user with new data
+   * Updates an existing user with new datas
    *
-   * @param user User to updated in the database
+   * @param user a {@link User} instance with the new user data
    * @return -1 in case of an error, other value if no error
    */
   public int updateUser(User user) {
     try (Statement stmt = db.getStatement()) {
-      String query =
-          "update gpg_keyserver.users"
-              + " set first_name = '"
-              + user.firstName
-              + "'"
-              + " set last_name = '"
-              + user.lastName
-              + "'"
-              + " where username = '"
-              + user.username
-              + "';";
+      StringBuilder query = new StringBuilder("UPDATE gpg_keyserver.users SET ");
+      query.append("first_name = '").append(user.firstName).append("', ");
+      query.append("last_name = '").append(user.lastName).append("' ");
+      query.append("WHERE username = '").append(user.username).append("';");
 
-      return stmt.executeUpdate(query);
+      return stmt.executeUpdate(query.toString());
     } catch (SQLException e) {
       System.err.println("SQLException: " + e.getMessage());
       return -1;
@@ -200,9 +204,9 @@ public class Users {
   }
 
   /**
-   * Deletes a specific user from the database
+   * Deletes a specific user from the database.
    *
-   * @param user User to deleted from the database
+   * @param user a {@link User} instance with the user to delete
    * @return -1 in case of an error, other value if no error
    */
   public int deleteUser(User user) {
@@ -217,6 +221,15 @@ public class Users {
     }
   }
 
+  /**
+   * Validates a username.
+   *
+   * <p>A valid username must have between 3 and 32 characters and can only contain letters,
+   * numbers, underscores, hyphens, and dots.
+   *
+   * @param username a {@link String} with the username to validate
+   * @return {@code true} if the username is valid, {@code false} otherwise
+   */
   public static boolean validateUsername(String username) {
     return username.matches("^[a-zA-Z0-9._-]{3,32}$");
   }

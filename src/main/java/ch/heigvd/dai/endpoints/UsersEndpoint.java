@@ -21,6 +21,7 @@ package ch.heigvd.dai.endpoints;
 import ch.heigvd.dai.db.Database;
 import ch.heigvd.dai.db.Users;
 import ch.heigvd.dai.db.Users.User;
+import ch.heigvd.dai.db.Users.UserWithoutUsername;
 import io.javalin.config.Key;
 import io.javalin.http.BadRequestResponse;
 import io.javalin.http.ConflictResponse;
@@ -102,7 +103,31 @@ public class UsersEndpoint {
   }
 
   public void updateUser(@NotNull Context ctx) {
-    // TODO
+    String username = ctx.pathParamAsClass("username", String.class).get();
+
+    if (!Users.validateUsername(username)) {
+      throw new BadRequestResponse();
+    }
+
+    final Database database = ctx.appData(new Key<>("database"));
+    User user = database.getUsers().getOne(username);
+    if (user == null) {
+      throw new NotFoundResponse();
+    }
+
+    UserWithoutUsername newUserWithoutUsername =
+        ctx.bodyValidator(UserWithoutUsername.class)
+            .check(obj -> obj.firstName() != null, "Missing first name")
+            .check(obj -> obj.lastName() != null, "Missing last name")
+            .get();
+
+    User newUser = new User(username, newUserWithoutUsername.firstName(), newUserWithoutUsername.lastName());
+
+    if(database.getUsers().updateUser(newUser) == -1) {
+      throw new BadRequestResponse();
+    }
+
+    ctx.json(newUser);
   }
 
   public void deleteUser(@NotNull Context ctx) {

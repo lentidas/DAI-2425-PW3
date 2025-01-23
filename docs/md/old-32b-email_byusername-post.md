@@ -6,6 +6,7 @@ Associates an email address to a user
 
 | Parameter  | Optional?    | Description                       |
 |------------|--------------|-----------------------------------|
+| `username` |              | Username to associate email to    |
 | `email`    |              | Email to associate to user        |
 
 ### Responses

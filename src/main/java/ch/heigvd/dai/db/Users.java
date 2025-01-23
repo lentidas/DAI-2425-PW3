@@ -42,27 +42,26 @@ public class Users {
    *
    * @param firstName a {@link String} with the user's first name
    * @param lastName a {@link String} with the user's last name
-   * @return
    */
   public record UserWithoutUsername(String firstName, String lastName) {}
 
   private final Database db;
 
   /**
-   * Default constructor to create a new {@link Users} table instance.
+   * Default constructor for the Users class.
    *
-   * @param ownerDb Owner database instance
+   * @param ownerDb a {@link Database} that is the database that owns this instance
    */
   public Users(Database ownerDb) {
-    db = ownerDb;
+    this.db = ownerDb;
   }
 
   /**
-   * Extracts all needed information from ResultSet to for a User instance
+   * Extracts all needed information from ResultSet to a User instance
    *
-   * @param rs Result set to extract information from
+   * @param rs a {@link ResultSet} to extract information from
    * @return a record of type {@link User} with the extracted information
-   * @throws SQLException Raised if one or more of the columns hasn't been found
+   * @throws SQLException if one or more of the columns hasn't been found
    */
   private User parseResult(ResultSet rs) throws SQLException {
     String username = rs.getString("username");

@@ -35,7 +35,6 @@ public class UsersEndpoint {
   public UsersEndpoint() {}
 
   public void getUsers(@NotNull Context ctx) {
-    // TODO
     final Database database = ctx.appData(new Key<>("database"));
     List<User> users;
 
@@ -47,6 +46,8 @@ public class UsersEndpoint {
     } else {
       users = database.getUsers().search(firstName, lastName);
     }
+
+    // TODO Probably catch the null case and return a proper HTTP status code (maybe send a 204?)
 
     ctx.json(users);
 
@@ -121,9 +122,10 @@ public class UsersEndpoint {
             .check(obj -> obj.lastName() != null, "Missing last name")
             .get();
 
-    User newUser = new User(username, newUserWithoutUsername.firstName(), newUserWithoutUsername.lastName());
+    User newUser =
+        new User(username, newUserWithoutUsername.firstName(), newUserWithoutUsername.lastName());
 
-    if(database.getUsers().updateUser(newUser) == -1) {
+    if (database.getUsers().updateUser(newUser) == -1) {
       throw new BadRequestResponse();
     }
 

@@ -21,6 +21,7 @@ package ch.heigvd.dai.endpoints;
 import ch.heigvd.dai.db.Database;
 import ch.heigvd.dai.db.Emails;
 import ch.heigvd.dai.db.Emails.Email;
+import ch.heigvd.dai.db.GPGKeys.GPGKey;
 import ch.heigvd.dai.db.Users;
 import io.javalin.config.Key;
 import io.javalin.http.BadRequestResponse;
@@ -32,6 +33,15 @@ import io.javalin.http.NotFoundResponse;
 import org.jetbrains.annotations.NotNull;
 
 public class EmailsEndpoint {
+
+  /**
+   * Recording holding both an email address and a GPG fingerprint. Used for POSTing an email
+   * address
+   *
+   * @param email Email address
+   * @param fingerprint Fingerprint to link to provided email address
+   */
+  private record EmailAndFingerprint(String email, String fingerprint) {}
 
   /**
    * Validates the provided username by checking whether it is valid, and exists in the database
@@ -106,13 +116,37 @@ public class EmailsEndpoint {
     String username = ctx.pathParamAsClass("username", String.class).get();
     final Database database = ctx.appData(new Key<>("database"));
 
-    Email reqEmail =
-        ctx.bodyValidator(Email.class).check(obj -> obj.email() != null, "Missing new email").get();
+    EmailAndFingerprint reqData =
+        ctx.bodyValidator(EmailAndFingerprint.class)
+            .check(obj -> obj.email() != null, "Missing new email")
+            .check(
+                obj -> obj.fingerprint() != null && obj.fingerprint().length() == 40,
+                "Fingerprint must be 40 characters long")
+            .get();
+
+    GPGKey improvGpgObj = new GPGKey(reqData.fingerprint, null);
 
     // We expect the email to be valid, and not be associated to any user yet
-    this.validateUserEmail(username, reqEmail.email(), database, false);
+    this.validateUserEmail(username, reqData.email(), database, false);
 
-    if (-1 == database.getEmails().addToUser(new Email(reqEmail.email(), username))) {
+    // Fingerprint not yet added
+    if (database.getGPGKeys().getOne(improvGpgObj.fingerprint()) == null) {
+      throw new NotFoundResponse();
+    }
+
+    // Fingerprint already linked to an email
+    if (null != database.getEmails().getByFingerprint(improvGpgObj)) {
+      throw new ConflictResponse();
+    }
+
+    Email emailObj = new Email(reqData.email(), username, null);
+    if (-1 == database.getEmails().attach(emailObj)) {
+      throw new InternalServerErrorResponse();
+    }
+
+    if (-1 == database.getEmails().linkFingerprint(emailObj, improvGpgObj)) {
+      // Detach the email we just attached to the user
+      database.getEmails().detach(emailObj.email());
       throw new InternalServerErrorResponse();
     }
 

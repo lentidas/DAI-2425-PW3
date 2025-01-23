@@ -50,9 +50,9 @@ public class GPGKeysEndpoints {
   public void addGPGKey(@NotNull Context ctx) {
     GPGKey newKey =
         ctx.bodyValidator(GPGKey.class)
-            .check(obj -> obj.fingerprint() != null, "Fingerprint is required")
             .check(
-                obj -> obj.fingerprint().length() == 40, "Fingerprint must be 40 characters long")
+                obj -> obj.fingerprint() != null && obj.fingerprint().length() == 40,
+                "Fingerprint must be 40 characters long")
             .check(obj -> obj.key() != null, "Key is required")
             .get();
 

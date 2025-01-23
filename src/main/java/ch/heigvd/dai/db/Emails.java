@@ -18,6 +18,7 @@
 
 package ch.heigvd.dai.db;
 
+import ch.heigvd.dai.db.GPGKeys.GPGKey;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
@@ -32,7 +33,7 @@ public class Emails {
    * @param email Email address
    * @param username User that owns the email address
    */
-  public record Email(String email, String username) {}
+  public record Email(String email, String username, String fingerprint) {}
 
   private final Database db;
 
@@ -55,7 +56,8 @@ public class Emails {
   private Email parseResult(ResultSet rs) throws SQLException {
     String email = rs.getString("email");
     String username = rs.getString("username");
-    return new Email(email, username);
+    String fingerprint = rs.getString("fingerprint");
+    return new Email(email, username, fingerprint);
   }
 
   /**
@@ -67,7 +69,12 @@ public class Emails {
     ArrayList<Email> emails = new ArrayList<>();
 
     try (Statement stmt = db.getStatement()) {
-      String query = "select * from " + db.schema + ".emails;";
+      String query =
+          "select * from "
+              + db.schema
+              + ".emails emails inner join "
+              + db.schema
+              + ".gpg_keys_emails gpg on emails.email = gpg.email;";
 
       ResultSet queryResult = stmt.executeQuery(query);
       while (queryResult.next()) {
@@ -88,23 +95,26 @@ public class Emails {
    * @return Email's instance, or null if an error occurred
    */
   public Email getOne(String email) {
-    Email found_email;
-
     try (Statement stmt = db.getStatement()) {
-      String query = "select * from " + db.schema + ".emails" + " where email = '" + email + "';";
+      String query =
+          "select * from "
+              + db.schema
+              + ".emails emails inner join "
+              + db.schema
+              + ".gpg_keys_emails gpg on emails.email = gpg.email where emails.email = '"
+              + email
+              + "';";
 
       ResultSet queryResult = stmt.executeQuery(query);
       if (!queryResult.next()) {
         return null;
       }
 
-      found_email = parseResult(queryResult);
+      return parseResult(queryResult);
     } catch (SQLException e) {
       System.err.println("SQLException: " + e.getMessage());
       return null;
     }
-
-    return found_email;
   }
 
   /**
@@ -117,7 +127,13 @@ public class Emails {
 
     try (Statement stmt = db.getStatement()) {
       String query =
-          "select * from " + db.schema + ".emails" + " where username = '" + username + "';";
+          "select * from "
+              + db.schema
+              + ".emails emails inner join "
+              + db.schema
+              + ".gpg_keys_emails gpg on emails.email = gpg.email where username = '"
+              + username
+              + "';";
 
       ResultSet queryResult = stmt.executeQuery(query);
       while (queryResult.next()) {
@@ -142,8 +158,7 @@ public class Emails {
     boolean found = false;
 
     try (Statement stmt = db.getStatement()) {
-      String query =
-          "select * from " + db.schema + ".emails" + " where username = '" + username + "';";
+      String query = "select * from " + db.schema + ".emails where username = '" + username + "';";
 
       ResultSet queryResult = stmt.executeQuery(query);
       while (queryResult.next()) {
@@ -165,7 +180,7 @@ public class Emails {
    * @param email Email model object to use for query
    * @return -1 if an error occurred, or 0 if successful
    */
-  public int addToUser(Email email) {
+  public int attach(Email email) {
     try (Statement stmt = db.getStatement()) {
       String query =
           "insert into "
@@ -191,7 +206,62 @@ public class Emails {
    */
   public int detach(String email) {
     try (Statement stmt = db.getStatement()) {
-      String query = "delete from " + db.schema + ".emails where email = '" + email + "');";
+      String query = "delete from " + db.schema + ".emails where email = '" + email + "';";
+      return stmt.executeUpdate(query);
+    } catch (SQLException e) {
+      System.err.println("SQLException: " + e.getMessage());
+      return -1;
+    }
+  }
+
+  /**
+   * Retrieves an email based on the provided fingerprint
+   *
+   * @param key Key object containing the fingerprint
+   * @return Null if an error occurred or no email has been found linked to that fingerprint, or an
+   *     email object if found
+   */
+  public Email getByFingerprint(GPGKey key) {
+    try (Statement stmt = db.getStatement()) {
+      String query =
+          "select * from "
+              + db.schema
+              + ".emails emails inner join "
+              + db.schema
+              + ".gpg_keys_emails gpg on emails.email = gpg.email where gpg.fingerprint = '"
+              + key.fingerprint()
+              + "';";
+
+      ResultSet queryResult = stmt.executeQuery(query);
+      if (!queryResult.next()) {
+        return null;
+      }
+
+      return parseResult(queryResult);
+    } catch (SQLException e) {
+      System.err.println("SQLException: " + e.getMessage());
+      return null;
+    }
+  }
+
+  /**
+   * Link a GPG fingerprint to an email address
+   *
+   * @param email Email object containing the email address to link the fingerprint to
+   * @param key Key object containing the fingerprint
+   * @return -1 in case of an error, or other value if successful
+   */
+  public int linkFingerprint(Email email, GPGKey key) {
+    try (Statement stmt = db.getStatement()) {
+      String query =
+          "insert into "
+              + db.schema
+              + ".gpg_keys_emails"
+              + " (fingerprint, email) values ('"
+              + key.fingerprint()
+              + "', '"
+              + email.email()
+              + "');";
       return stmt.executeUpdate(query);
     } catch (SQLException e) {
       System.err.println("SQLException: " + e.getMessage());

@@ -217,7 +217,32 @@ re.com/users
 Conflict
 ```
 
+### Pushing a new key & fingerprint
 
+```bash
+$ curl -v --header "Content-Type: application/json" --data '{"fingerprint":"123456789ABCDEF123456789ABCDEF1234567890","key":"-----BEGIN PGP PUBLIC KEY BLOCK-----[...]-----END PGP PUBLIC KEY BLOCK-----"}' https://gpg-keyserver.westeurope.cloudapp.azure.com/gpg-keys
+* Host gpg-keyserver.westeurope.cloudapp.azure.com:443 was resolved.
+* IPv6: (none)
+* IPv4: 108.143.27.98
+*   Trying 108.143.27.98:443...
+* Connected to gpg-keyserver.westeurope.cloudapp.azure.com (108.143.27.98) port 443
+* ALPN: curl offers h2,http/1.1
+* TLSv1.3 (OUT), TLS handshake, Client hello (1):
+* [...]
+> POST /gpg-keys HTTP/2
+> Host: gpg-keyserver.westeurope.cloudapp.azure.com
+> User-Agent: curl/8.5.0
+> Accept: */*
+> Content-Type: application/json
+> Content-Length: 14029
+>
+< HTTP/2 201
+< content-type: application/json
+< date: Thu, 23 Jan 2025 22:50:42 GMT
+<
+{"fingerprint":"123456789ABCDEF123456789ABCDEF1234567890","key":"-----BEGIN PGP PUBLIC KEY BLOCK-----[...]-----END PGP PUBLIC KEY BLOCK-----"}
+* Connection #0 to host gpg-keyserver.westeurope.cloudapp.azure.com left intact
+```
 
 
 ## Documentation

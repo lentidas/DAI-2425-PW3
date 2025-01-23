@@ -22,6 +22,7 @@ import ch.heigvd.dai.db.Database;
 import ch.heigvd.dai.db.Users.User;
 import io.javalin.config.Key;
 import io.javalin.http.Context;
+import io.javalin.http.NotFoundResponse;
 import java.util.List;
 import org.jetbrains.annotations.NotNull;
 
@@ -53,7 +54,16 @@ public class UsersEndpoint {
   }
 
   public void getUser(@NotNull Context ctx) {
-    // TODO
+    final Database database = ctx.appData(new Key<>("database"));
+
+    String username = ctx.pathParamAsClass("username", String.class).get();
+    User user = database.getUsers().getOne(username);
+
+    if (user == null) {
+      throw new NotFoundResponse();
+    } else {
+      ctx.json(user);
+    }
   }
 
   public void createUser(@NotNull Context ctx) {

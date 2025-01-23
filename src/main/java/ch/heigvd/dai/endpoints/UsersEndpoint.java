@@ -151,12 +151,4 @@ public class UsersEndpoint {
       ctx.status(HttpStatus.OK);
     }
   }
-
-  public void updateUserEmail(@NotNull Context ctx) {
-    // TODO
-  }
-
-  public void deleteUserEmail(@NotNull Context ctx) {
-    // TODO
-  }
 }

@@ -11,8 +11,8 @@ No HTTP path or query parameters are needed.
 The request body must contain a JSON object with the following fields:
 
 - `username`: username to be used for this user
-- `firstname`: user's first name
-- `lastname`: user's last name
+- `firstName`: user's first name
+- `lastName`: user's last name
 
 ### Responses
 
@@ -22,8 +22,7 @@ The server returns the following status codes:
 - `400`: username is malformed (must contain only alphanumeric characters, dots, and underscores)
 - `409`: username has already been taken
 
-If the creation is successful, a JSON object with the same fields as the request is returned.
-Otherwise, an appropriate HTTP status code is returned.
+Only a status code with an empty body is returned.
 
 ### Example with valid data
 
@@ -35,8 +34,8 @@ POST /users
 
 {
     "username": "john.doe",
-    "firstname": "John",
-    "lastname": "Doe"
+    "firstName": "John",
+    "lastName": "Doe"
 }
 ```
 
@@ -44,12 +43,6 @@ POST /users
 
 ```
 201 Created
-    
-{
-    "username": "john.doe",
-    "firstname": "John",
-    "lastname": "Doe"
-}
 ```
 
 ### Example with malformed username
@@ -60,8 +53,8 @@ POST /users
 
 {
     "username": "j$hn:doe",
-    "firstname": "John",
-    "lastname": "Doe"
+    "firstName": "John",
+    "lastName": "Doe"
 }
 ```
 

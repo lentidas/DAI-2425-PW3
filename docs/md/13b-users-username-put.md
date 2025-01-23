@@ -15,8 +15,8 @@ followed by moving the emails from the old user to the new one, then deleting th
 
 The request body must contain a JSON object with the following fields:
 
-- `firstname`: user's first name
-- `lastname`: user's last name
+- `firstName`: user's first name
+- `lastName`: user's last name
 
 ### Responses
 
@@ -26,15 +26,7 @@ The server returns the following status codes:
 - `400`: username is malformed
 - `404`: user does not exist
 
-When successful, it returns a JSON object containing the user's information:
-
-```json
-{
-    "username": "john.doe",
-    "firstName": "John",
-    "lastName": "Doe"
-}
-```
+Only a status code with an empty body is returned.
 
 ### Example with valid data
 

@@ -22,14 +22,7 @@ The server returns the following status codes:
 - `400`: fingerprint is malformed
 - `404`: key does not exist
 
-When successful, it returns a JSON object containing the user's information:
-
-```json
-{
-  "fingerprint": "AABBCCDDEEFFGGHHIIJJKKLLMMNNOOPPQQRRSSTT",
-  "key": "-----BEGIN PGP PUBLIC KEY BLOCK-----\n\n[...]\n-----END PGP PUBLIC KEY BLOCK-----"
-}
-```
+Only a status code with an empty body is returned.
 
 ### Example with valid data
 
@@ -46,13 +39,8 @@ PUT /gpg-keys/AABBCCDDEEFFGGHHIIJJKKLLMMNNOOPPQQRRSSTT
 
 **Response**:
 
-`200 OK`
-
-```json
-{
-  "fingerprint": "AABBCCDDEEFFGGHHIIJJKKLLMMNNOOPPQQRRSSTT",
-  "key": "-----BEGIN PGP PUBLIC KEY BLOCK-----\n\n[...]\n-----END PGP PUBLIC KEY BLOCK-----"
-}
+```
+200 OK
 ```
 
 ### Example with invalid fingerprint

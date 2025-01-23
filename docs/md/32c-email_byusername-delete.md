@@ -4,10 +4,15 @@ Detaches an email address from a user. This also removes any key - email pairs f
 
 ### Parameters
 
-| Parameter  | Optional?    | Description                      |
-|------------|--------------|----------------------------------|
-| `username` |              | Username to detach an email from |
-| `email`    |              | Email to detach from user        |
+| Parameter  | Optional?    | Description                       |
+|------------|--------------|-----------------------------------|
+| `username` |              | Username to detach an email from. |
+
+### Request
+
+The request body must contain a JSON object with the following fields:
+
+- `email`: user's email address to be deleted
 
 ### Responses
 
@@ -15,8 +20,7 @@ Detaches an email address from a user. This also removes any key - email pairs f
 - `400`: Invalid username (malformed username)
 - `404`: Unknown username or email address is not attached to user
 
-Response is empty when request is successful. If an error occurs, response if the HTTP status' name.
-
+Only a status code with an empty body is returned.
 
 ### Example with a valid username and email
 

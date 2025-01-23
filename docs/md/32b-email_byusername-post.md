@@ -1,23 +1,27 @@
 ## `POST /emails/{username}`
 
-Associates an email address to a user
+Associates an email address to a user.
 
 ### Parameters
 
-| Parameter  | Optional?    | Description                       |
-|------------|--------------|-----------------------------------|
-| `username` |              | Username to associate email to    |
-| `email`    |              | Email to associate to user        |
+| Parameter  | Optional?    | Description                     |
+|------------|--------------|---------------------------------|
+| `username` |              | Username to associate email to. |
+
+### Request
+
+The request body must contain a JSON object with the following fields:
+
+- `email`: user's email address
 
 ### Responses
 
-- `201`: Association created
-- `400`: Invalid username (malformed username)
-- `404`: Unknown username
-- `410`: Email address has already been associated to a user
+- `201`: association created
+- `400`: invalid username (malformed username)
+- `404`: unknown username
+- `409`: email address has already been associated to a user
 
-No response is returned when successful. When an error occurs, HTTP status code message is returned.
-
+Only a status code with an empty body is returned.
 
 ### Example with a valid username and email
 
@@ -34,9 +38,9 @@ POST /emails/john.doe
 
 **Response**:
 
-`
+```
 200 OK
-`
+```
 
 ### Example with an invalid username
 
@@ -53,12 +57,8 @@ POST /emails/malf:or$med
 
 **Response**:
 
-`
-400 BAD
-`
-
 ```
-Bad Request
+400 Bad Request
 ```
 
 ### Example with an invalid email address
@@ -76,12 +76,8 @@ POST /emails/john.doe
 
 **Response**:
 
-`
-400 BAD
-`
-
 ```
-Bad Request
+400 Bad Request
 ```
 
 ### Example with an unknown user
@@ -99,12 +95,8 @@ POST /emails/unknown.user
 
 **Response**:
 
-`
-404 NOT FOUND
-`
-
 ```
-Not Found
+404 Not Found
 ```
 
 ### Example with an email that's already been attached to another user
@@ -122,10 +114,6 @@ POST /emails/john.doe
 
 **Response**:
 
-`
-410 CONFLICT
-`
-
 ```
-Conflict
+409 Conflict
 ```

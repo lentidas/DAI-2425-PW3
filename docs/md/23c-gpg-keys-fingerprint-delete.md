@@ -14,6 +14,8 @@ Deletes a key from the server.
 - `400`: fingerprint is invalid
 - `404`: key does not exist
 
+Only a status code with an empty body is returned.
+
 ### Example with valid GPG key
 
 **Request**:
@@ -24,13 +26,8 @@ DELETE /gpg-keys/AABBCCDDEEFFGGHHIIJJKKLLMMNNOOPPQQRRSSTT
 
 **Response**:
 
-`200 OK`
-
-```json
-{
-  "fingerprint": "AABBCCDDEEFFGGHHIIJJKKLLMMNNOOPPQQRRSSTT",
-  "key": "-----BEGIN PGPPUBLIC KEY BLOCK-----\n\n[...]\n-----END PGP PUBLIC KEY BLOCK-----"
-}
+```
+200 OK
 ```
 
 ### Example with invalid fingerprint

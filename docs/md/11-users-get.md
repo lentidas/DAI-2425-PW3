@@ -15,7 +15,7 @@ are provided, the server will return only the users that match both criteria.
 ### Responses
 
 The server will always return `200`. It returns the list of users with their username and names in a
-JSON list format. An empty list is returned if no users are found.
+JSON list format or an empty list is returned if no users are found.
 
 ### Example usage
 

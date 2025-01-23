@@ -20,8 +20,7 @@ The request body must contain a JSON object with the following fields:
 - `400`: either the fingerprint or the key is invalid
 - `409`: the fingerprint is already present in the database
 
-If the creation is successful, a JSON object with the same fields as the request is returned.
-Otherwise, an appropriate HTTP status code is returned.
+Only a status code with an empty body is returned.
 
 ### Example with valid key
 
@@ -39,13 +38,8 @@ POST /gpg-keys
 
 **Response**:
 
-`201 Created`
-
 ```
-{
-    "fingerprint": "AABBCCDDEEFFGGHHIIJJKKLLMMNNOOPPQQRRSSTT",
-    "key": "-----BEGIN PG PUBLIC KEY BLOCK-----\n\n[...]\n-----END PGP PUBLIC KEY BLOCK-----"
-}
+201 Created
 ```
 
 ### Example with invalid key

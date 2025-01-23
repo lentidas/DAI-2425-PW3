@@ -1,20 +1,20 @@
 ## `GET /emails/{username}`
 
-Shows a list of all the emails addresses associated with a specific user
+Shows a list of all the emails addresses associated with a specific user.
 
 ### Parameters
 
-| Parameter  | Optional?    | Description                                            |
-|------------|--------------|--------------------------------------------------------|
-| `username` |              | Username to use to retrieve all emails associated with |
+| Parameter  | Optional?    | Description                                             |
+|------------|--------------|---------------------------------------------------------|
+| `username` |              | Username to use to retrieve all emails associated with. |
 
 ### Responses
 
-- `200`: Request was successful
-- `400`: Invalid username (malformed username)
-- `404`: Unknown username
+- `200`: request was successful
+- `400`: invalid username (malformed username)
+- `404`: unknown username
 
-Response, if an error occurred, the HTTP status name is returned. If successful, response if in a JSON list format like the one below:
+Only a status code with an empty body is returned.
 
 ```json
 [

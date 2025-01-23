@@ -1,4 +1,4 @@
-## `GET /user/{username}`
+## `GET /users/{username}`
 
 Allows a client to obtain information about the provided user.
 

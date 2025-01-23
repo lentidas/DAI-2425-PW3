@@ -19,7 +19,7 @@ The server returns the following status codes:
 - `400`: username is malformed
 - `404`: user does not exist
 
-Always returns an empty JSON list: `[]`
+Only a status code with an empty body is returned.
 
 ### Example with valid username
 
@@ -36,8 +36,8 @@ DELETE /users/john.doe
 ```json
 {
     "username": "john.doe",
-    "firstname": "John",
-    "lastname": "Doe"
+    "firstName": "John",
+    "lastName": "Doe"
 }
 ```
 

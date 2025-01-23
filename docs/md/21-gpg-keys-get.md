@@ -1,10 +1,10 @@
-## `GET /gpg/list`
+## `GET /gpg-keys`
 
 Shows a list of all stored public GPG keys, along with the respective fingerprint.
 
 ### Parameters
 
-This endpoint does not take any parameters.
+No HTTP path or query parameters are needed.
 
 ### Responses
 

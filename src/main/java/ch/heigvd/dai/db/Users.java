@@ -45,6 +45,7 @@ public class Users {
    */
   public record UserWithoutUsername(String firstName, String lastName) {}
 
+  /** The database that owns this instance. */
   private final Database db;
 
   /**

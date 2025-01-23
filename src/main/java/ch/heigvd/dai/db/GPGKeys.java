@@ -34,6 +34,16 @@ public class GPGKeys {
    */
   public record GPGKey(String fingerprint, String key) {}
 
+  /**
+   * Record that hold a GPG key, except the fingerprint.
+   *
+   * <p>Used in special cases, like when updating the public key in the server.
+   *
+   * @param key a {@link String} that is the key itself in ASCII-armored format
+   */
+  public record GPGKeyWithoutFingerprint(String key) {}
+
+  /** The database that owns this instance. */
   private final Database db;
 
   /**
@@ -125,6 +135,25 @@ public class GPGKeys {
   }
 
   /**
+   * Updates a GPG key in the database.
+   *
+   * @param key a {@link GPGKey} instance with the new key
+   * @return -1 in case of an error, other value if no error
+   */
+  public int updateKey(GPGKey key) {
+    try (Statement stmt = db.getStatement()) {
+      StringBuilder query = new StringBuilder("UPDATE gpg_keyserver.gpg_keys SET ");
+      query.append("key = '").append(key.key()).append("' ");
+      query.append("WHERE fingerprint = '").append(key.fingerprint()).append("';");
+
+      return stmt.executeUpdate(query.toString());
+    } catch (SQLException e) {
+      System.err.println("SQLException: " + e.getMessage());
+      return -1;
+    }
+  }
+
+  /**
    * Deletes a GPG key from the database.
    *
    * @param fingerprint a {@link String} that is the fingerprint of the key
@@ -132,7 +161,8 @@ public class GPGKeys {
    */
   public int deleteKey(String fingerprint) {
     try (Statement stmt = db.getStatement()) {
-      String query = "DELETE FROM gpg_keyserver.gpg_keys WHERE fingerprint = '" + fingerprint + "';";
+      String query =
+          "DELETE FROM gpg_keyserver.gpg_keys WHERE fingerprint = '" + fingerprint + "';";
 
       return stmt.executeUpdate(query);
     } catch (SQLException e) {

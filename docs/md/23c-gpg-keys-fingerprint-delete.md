@@ -1,13 +1,12 @@
-
 ## `DELETE /gpg-keys/{fingerprint}`
 
 Deletes a key from the server.
 
 ### Parameters
 
-| Parameter     | Optional?    | Description                                           |
-|---------------|--------------|-------------------------------------------------------|
-| `fingerprint` |              | Fingerprint of the GPG key the client want to obtain. |
+| Parameter     | Optional? | Description                                           |
+|---------------|-----------|-------------------------------------------------------|
+| `fingerprint` |           | Fingerprint of the GPG key the client want to obtain. |
 
 ### Responses
 
@@ -29,8 +28,8 @@ DELETE /gpg-keys/AABBCCDDEEFFGGHHIIJJKKLLMMNNOOPPQQRRSSTT
 
 ```json
 {
-    "fingerprint": "AABBCCDDEEFFGGHHIIJJKKLLMMNNOOPPQQRRSSTT",
-    "key": "-----BEGIN PGPPUBLIC KEY BLOCK-----\n\n[...]\n-----END PGP PUBLIC KEY BLOCK-----"
+  "fingerprint": "AABBCCDDEEFFGGHHIIJJKKLLMMNNOOPPQQRRSSTT",
+  "key": "-----BEGIN PGPPUBLIC KEY BLOCK-----\n\n[...]\n-----END PGP PUBLIC KEY BLOCK-----"
 }
 ```
 

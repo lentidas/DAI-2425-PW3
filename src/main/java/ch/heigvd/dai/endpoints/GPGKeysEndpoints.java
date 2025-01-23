@@ -21,6 +21,7 @@ package ch.heigvd.dai.endpoints;
 import ch.heigvd.dai.db.Database;
 import ch.heigvd.dai.db.GPGKeys;
 import ch.heigvd.dai.db.GPGKeys.GPGKey;
+import ch.heigvd.dai.db.GPGKeys.GPGKeyWithoutFingerprint;
 import io.javalin.config.Key;
 import io.javalin.http.BadRequestResponse;
 import io.javalin.http.ConflictResponse;
@@ -88,7 +89,33 @@ public class GPGKeysEndpoints {
   }
 
   public void updateGPGKey(@NotNull Context ctx) {
-    // TODO Should provide a way to update the key's emails or the key itself
+    String fingerprint =
+        ctx.pathParamAsClass("fingerprint", String.class)
+            .check(obj -> obj.length() == 40, "Fingerprint must be 40 characters long")
+            .get();
+
+    final Database database = ctx.appData(new Key<>("database"));
+    GPGKey key = database.getGPGKeys().getOne(fingerprint);
+    if (key == null) {
+      throw new NotFoundResponse();
+    }
+
+    GPGKeyWithoutFingerprint newKeyWithoutFingerprint =
+        ctx.bodyValidator(GPGKeyWithoutFingerprint.class)
+            .check(obj -> obj.key() != null, "Key is required")
+            .get();
+
+    if (!GPGKeys.validateGPGKey(newKeyWithoutFingerprint.key())) {
+      throw new BadRequestResponse();
+    }
+
+    GPGKey newKey = new GPGKey(fingerprint, newKeyWithoutFingerprint.key());
+
+    if (database.getGPGKeys().updateKey(newKey) == -1) {
+      throw new BadRequestResponse();
+    }
+
+    ctx.json(newKey);
   }
 
   public void deleteGPGKey(@NotNull Context ctx) {

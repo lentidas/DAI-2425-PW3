@@ -19,90 +19,66 @@
 
 - [Table of Contents](#table-of-contents)
   - [Usage](#usage)
-    - [Build Docker image](#build-docker-image)
-    - [Print the help message](#print-the-help-message)
-    - [Start the server](#start-the-server)
-    - [Start the client](#start-the-client)
-    - [Using the JAR](#using-the-jar)
+    - [Running the Docker Compose file](#running-the-docker-compose-file)
+      - [Running the `docker-compose.yaml` file](#running-the-docker-composeyaml-file)
+  - [Using cURL against our API](#using-curl-against-our-api)
+    - [Getting the list of all users](#getting-the-list-of-all-users)
+    - [Get a user by their first name](#get-a-user-by-their-first-name)
+    - [Adding a new user](#adding-a-new-user)
+    - [Error when adding a user with a conflicting username](#error-when-adding-a-user-with-a-conflicting-username)
+  - [Infrastructure](#infrastructure)
   - [Documentation](#documentation)
   - [Contributing](#contributing)
     - [Clone and build the project](#clone-and-build-the-project)
 
 ## Usage
 
-
-
 The full API specification is available in [this document](./docs/api_doc.pdf).
 
 > [!NOTE]
-> For compatibility through multiple operating systems, we recommend you run this program using Docker. You can still run the JAR we release, but ensure you have Java 21 or later installed on your machine.
+> For compatibility through multiple operating systems, we recommend you run this program using Docker.
 
-### Build Docker image
+### Running the Docker Compose file
 
-The image to run the program is available alongside the releases of this repository:
+We provide 2 Docker Compose files that allow you to test the application:
 
-```shell
-# Pull the image from GitHub Container Registry.
-docker pull ghcr.io/lentidas/dai-2425-pw3:latest
-```
+- `docker-compose.yaml`: this file is the one used to deploy the application in a production environment, on Microsoft Azure;
+- `docker-compose-local.yaml`: this file is the one used to deploy the application in a local environment, on your machine.
 
-You can also build the image yourself using the provided Dockerfile:
+Both files deploy the following:
+- a PostgreSQL database container;
+- a Traefik reverse proxy;
+- a GPG Keyserver container.
+
+> [!IMPORTANT]
+> The `docker-compose.yaml` file is configured to deploy the application on Microsoft Azure. You will need to change the `"traefik.http.routers.website.rule=Host(`gpg-keyserver.westeurope.cloudapp.azure.com`)"` label in the `gpg-keyserver` service to match your domain.
+
+> [!NOTE]
+> The `docker-compose-local.yaml` file deploys the containers on your local machine, as such, the domain `localhost` is used. Also, no SSL is configured in this file, so port 80 is the only endpoint available.
+
+> [!IMPORTANT]
+> For some reason, we had issues with the GitHub Actions workflow that builds the Docker image, and we were unable to publish the image to the GitHub Container Registry. We decided, in a hail mary, to set our `docker-compose.yaml` file **to also build the image when running the services**, similarly to the `docker-compose-local.yaml`. This means that the image is not available in the GitHub Container Registry. We apologize for the inconvenience.
+
+> [!NOTE]
+> An init script to create the database schema is used by the PostgreSQL container. This script is located in the `db` folder. An important note, is that this script only runs on a fresh database, **so if you need to run it again, you will need to delete the database volume**.
+
+#### Running the `docker-compose.yaml` file
+
+To run the `docker-compose-local.yaml` file on your machine, you can use the following commands:
 
 ```shell
 # Clone the repository.
 git clone https://github.com/lentidas/DAI-2425-PW3.git
 
-# Change to the project directory.
+## Change to the project directory.
 cd DAI-2425-PW3
 
-# Build the Docker image.
-docker build -t quickgpg:latest .
+### Start the services.
+docker-compose -f docker-compose-local.yaml up -d
+
+### Check that the service is running and provides data.
+curl -i http://localhost/users
 ```
-
-> [!NOTE]
-> For the following sections, adapt the commands to use the image you built or pulled from the GitHub Container Registry.
-
-### Print the help message
-
-To print the help message, you can use the following commands:
-
-```shell
-# Print the help message for the server.
-docker run ghcr.io/lentidas/dai-2425-pw3:latest server --help
-
-# Starting the container without arguments defaults to printing the help message for the server.
-docker run ghcr.io/lentidas/dai-2425-pw3:latest
-```
-
-### Start the HTTP server
-
-To start the server, you can use the following commands:
-
-> [!NOTE]
-> The `Dockerfile` exposes the port `7070` by default. As you noted from the examples above, if you want to change the port of the program using the `-p` or `-b` flags, you must also expose the same port when running the container.
-
-> [!IMPORTANT]
-> Since we are using Docker, the server will not be accessible with the default listening address of `127.0.0.1`. You must ALWAYS override and use a *any* address like `0.0.0.0` or `::` to allow connections from outside the container.
-
-### Start the PostgresSQL database
-
-To start the client, you can use the following commands:
-
-> [!NOTE]
-> The `Dockerfile` exposes the port `5432` by default. As you noted from the examples above, if you want to change the port of the program using the `-p` or `-b` flags, you must also expose the same port when running the container.
-
-### Using the JAR
-
-Using the JAR directly is also possible, as long as you have a database deployed on a locally-running PostgresSQL database. Default connection parameters are as follows:
-
-- Database: `gpg_keyserver_db`
-- Schema: `gpg_keyserver`
-- Username: `gpg_keyserver`
-- Password: `gpg_keyserver`
-- Port: 5432
-
-You can download the JAR from the [releases page](https://github.com/lentidas/DAI-2425-PW3/releases).
-
 
 ## Using cURL against our API
 
@@ -244,6 +220,13 @@ $ curl -v --header "Content-Type: application/json" --data '{"fingerprint":"1234
 * Connection #0 to host gpg-keyserver.westeurope.cloudapp.azure.com left intact
 ```
 
+## Infrastructure
+
+The infrastructure for this project is deployed on Microsoft Azure. We tried to follow a Infrastructure as Code approach, using Terraform to deploy the resources and Ansible to bootstrap the VM with the necessary configurations.
+
+The infrastructure code is located in the `infra` directory. The code is executed in a GitHub Actions workflow with the required secrets to authenticate with Azure.
+
+A `README.md` file is available in the `infra/terraform` directory with instructions on how to deploy the infrastructure. We think a configuration step is missing, but please open an issue if you find this useful for you. We did not make one for the Ansible part.
 
 ## Documentation
 

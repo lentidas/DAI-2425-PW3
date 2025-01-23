@@ -26,6 +26,7 @@ import io.javalin.config.Key;
 import io.javalin.http.BadRequestResponse;
 import io.javalin.http.ConflictResponse;
 import io.javalin.http.Context;
+import io.javalin.http.HttpStatus;
 import io.javalin.http.NotFoundResponse;
 import java.util.List;
 import org.jetbrains.annotations.NotNull;
@@ -47,9 +48,8 @@ public class UsersEndpoint {
       users = database.getUsers().search(firstName, lastName);
     }
 
-    // TODO Probably catch the null case and return a proper HTTP status code (maybe send a 204?)
-
     ctx.json(users);
+    ctx.status(HttpStatus.OK);
 
     // FIXME Consider how to better set the content type to JSON with UTF-8 encoding because the
     //  default Content-Type is overridden by the .json() method.
@@ -81,8 +81,8 @@ public class UsersEndpoint {
       throw new BadRequestResponse();
     }
 
-    ctx.status(201);
     ctx.json(newUser);
+    ctx.status(HttpStatus.CREATED);
   }
 
   public void getUser(@NotNull Context ctx) {
@@ -98,6 +98,7 @@ public class UsersEndpoint {
     }
 
     ctx.json(user);
+    ctx.status(HttpStatus.OK);
   }
 
   public void updateUser(@NotNull Context ctx) {
@@ -127,6 +128,7 @@ public class UsersEndpoint {
     }
 
     ctx.json(newUser);
+    ctx.status(HttpStatus.OK);
   }
 
   public void deleteUser(@NotNull Context ctx) {
@@ -146,6 +148,7 @@ public class UsersEndpoint {
       throw new BadRequestResponse();
     } else {
       ctx.json(user);
+      ctx.status(HttpStatus.OK);
     }
   }
 

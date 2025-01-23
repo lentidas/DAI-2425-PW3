@@ -26,6 +26,7 @@ import io.javalin.config.Key;
 import io.javalin.http.BadRequestResponse;
 import io.javalin.http.ConflictResponse;
 import io.javalin.http.Context;
+import io.javalin.http.HttpStatus;
 import io.javalin.http.NotFoundResponse;
 import java.util.List;
 import org.jetbrains.annotations.NotNull;
@@ -43,6 +44,7 @@ public class GPGKeysEndpoints {
     // TODO Probably catch the null case and return a proper HTTP status code (maybe send a 204?)
 
     ctx.json(keys);
+    ctx.status(HttpStatus.OK);
   }
 
   public void addGPGKey(@NotNull Context ctx) {
@@ -69,8 +71,8 @@ public class GPGKeysEndpoints {
       throw new BadRequestResponse();
     }
 
-    ctx.status(201);
     ctx.json(newKey);
+    ctx.status(HttpStatus.CREATED);
   }
 
   public void getGPGKey(@NotNull Context ctx) {
@@ -86,6 +88,7 @@ public class GPGKeysEndpoints {
     }
 
     ctx.json(key);
+    ctx.status(HttpStatus.OK);
   }
 
   public void updateGPGKey(@NotNull Context ctx) {
@@ -116,6 +119,7 @@ public class GPGKeysEndpoints {
     }
 
     ctx.json(newKey);
+    ctx.status(HttpStatus.OK);
   }
 
   public void deleteGPGKey(@NotNull Context ctx) {
@@ -134,6 +138,7 @@ public class GPGKeysEndpoints {
       throw new BadRequestResponse();
     } else {
       ctx.json(key);
+      ctx.status(HttpStatus.OK);
     }
   }
 }

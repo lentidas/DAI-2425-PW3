@@ -164,7 +164,7 @@ public class Users {
   /**
    * Creates a new user row.
    *
-   * @param user User to insert into database
+   * @param user a {@link User} instance with the new user
    * @return -1 in case of an error, other value if no error
    */
   public int createUser(User user) {
@@ -184,7 +184,7 @@ public class Users {
   }
 
   /**
-   * Updates an existing user with new datas
+   * Updates an existing user with new data.
    *
    * @param user a {@link User} instance with the new user data
    * @return -1 in case of an error, other value if no error

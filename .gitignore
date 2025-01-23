@@ -50,3 +50,6 @@ infra/terraform/.terraform.lock.hcl
 
 ## Summon
 infra/terraform/secrets.yml
+
+## Temporary documentation files
+tmp_*.pdf

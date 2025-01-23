@@ -1,4 +1,4 @@
-## `GET /email/by-username/{username}`
+## `GET /emails/{username}`
 
 Shows a list of all the emails addresses associated with a specific user
 
@@ -14,7 +14,7 @@ Shows a list of all the emails addresses associated with a specific user
 - `400`: Invalid username (malformed username)
 - `404`: Unknown username
 
-Response, if an error occurred, is an empty JSON list: `[]`. If successful, response if in a JSON list format like the one below:
+Response, if an error occurred, the HTTP status name is returned. If successful, response if in a JSON list format like the one below:
 
 ```json
 [
@@ -34,7 +34,7 @@ Response, if an error occurred, is an empty JSON list: `[]`. If successful, resp
 
 **Request**:
 
-`GET /email/by-username/john.doe`
+`GET /emails/john.doe`
 
 **Response**:
 
@@ -57,7 +57,7 @@ Response, if an error occurred, is an empty JSON list: `[]`. If successful, resp
 
 **Request**:
 
-`GET /email/by-username/empty.user`
+`GET /emails/empty.user`
 
 **Response**:
 
@@ -71,14 +71,14 @@ Response, if an error occurred, is an empty JSON list: `[]`. If successful, resp
 
 **Request**:
 
-`GET /email/by-username/malf:or$med`
+`GET /emails/malf:or$med`
 
 **Response**:
 
 `400 BAD`
 
-```json
-[]
+```
+Bad Request
 ```
 
 
@@ -86,12 +86,12 @@ Response, if an error occurred, is an empty JSON list: `[]`. If successful, resp
 
 **Request**:
 
-`GET /email/by-username/unknown.user`
+`GET /emails/unknown.user`
 
 **Response**:
 
 `404 NOT FOUND`
 
-```json
-[]
+```
+Not Found
 ```

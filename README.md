@@ -104,6 +104,122 @@ Using the JAR directly is also possible, as long as you have a database deployed
 You can download the JAR from the [releases page](https://github.com/lentidas/DAI-2425-PW3/releases).
 
 
+## Using cURL against our API
+
+cURL can easily be used to interact with our HTTP server. A few examples are:
+
+### Getting the list of all users
+
+```curl -v https://gpg-keyserver.westeurope.cloudapp.azure.com/users
+* Host gpg-keyserver.westeurope.cloudapp.azure.com:443 was resolved.
+* IPv6: (none)
+* IPv4: 108.143.27.98
+*   Trying 108.143.27.98:443...
+* Connected to gpg-keyserver.westeurope.cloudapp.azure.com (108.143.27.98) port 443
+* ALPN: curl offers h2,http/1.1
+* TLSv1.3 (OUT), TLS handshake, Client hello (1):
+* [...]
+> GET /users HTTP/2
+> Host: gpg-keyserver.westeurope.cloudapp.azure.com
+> User-Agent: curl/8.5.0
+> Accept: */*
+>
+< HTTP/2 200
+< content-type: application/json
+< date: Thu, 23 Jan 2025 22:41:52 GMT
+< content-length: 140
+<
+* Connection #0 to host gpg-keyserver.westeurope.cloudapp.azure.com left intact
+[{"username":"PedroAS7","firstName":"Pedro","lastName":"Alves da Silva"},{"username":"lentidas","firstName":"Gonçalo","lastName":"Heleno"}]
+```
+
+### Get a user by their first name
+
+```bash
+$ curl -v https://gpg-keyserver.westeurope.cloudapp.azure.com/users?firstName=gonçalo
+* Host gpg-keyserver.westeurope.cloudapp.azure.com:443 was resolved.
+* IPv6: (none)
+* IPv4: 108.143.27.98
+*   Trying 108.143.27.98:443...
+* Connected to gpg-keyserver.westeurope.cloudapp.azure.com (108.143.27.98) port 443
+* ALPN: curl offers h2,http/1.1
+* TLSv1.3 (OUT), TLS handshake, Client hello (1):
+* [...]
+> GET /users?firstName=gonçalo HTTP/2
+> Host: gpg-keyserver.westeurope.cloudapp.azure.com
+> User-Agent: curl/8.5.0
+> Accept: */*
+>
+< HTTP/2 200
+< content-type: application/json
+< date: Thu, 23 Jan 2025 22:43:06 GMT
+< content-length: 68
+<
+* Connection #0 to host gpg-keyserver.westeurope.cloudapp.azure.com left intact
+[{"username":"lentidas","firstName":"Gonçalo","lastName":"Heleno"}]
+```
+
+### Adding a new user
+
+```bash
+$ curl -v --header "Content-Type: application/json" --data '{"username": "john.doe", "firstName": "john", "lastName": "doe"}' https://gpg-keyserver.westeurope.cloudapp.azure
+.com/users
+* Host gpg-keyserver.westeurope.cloudapp.azure.com:443 was resolved.
+* IPv6: (none)
+* IPv4: 108.143.27.98
+*   Trying 108.143.27.98:443...
+* Connected to gpg-keyserver.westeurope.cloudapp.azure.com (108.143.27.98) port 443
+* ALPN: curl offers h2,http/1.1
+* TLSv1.3 (OUT), TLS handshake, Client hello (1):
+* [...]
+> POST /users HTTP/2
+> Host: gpg-keyserver.westeurope.cloudapp.azure.com
+> User-Agent: curl/8.5.0
+> Accept: */*
+> Content-Type: application/json
+> Content-Length: 64
+>
+< HTTP/2 201
+< content-type: application/json
+< date: Thu, 23 Jan 2025 22:44:13 GMT
+< content-length: 59
+<
+* Connection #0 to host gpg-keyserver.westeurope.cloudapp.azure.com left intact
+{"username":"john.doe","firstName":"john","lastName":"doe"}
+```
+
+### Error when adding a user with a conflicting username
+
+```bash
+$ curl -v --header "Content-Type: application/json" --data '{"username": "john.doe", "firstName": "johnny", "lastName": "doe"}' https://gpg-keyserver.westeurope.cloudapp.azu
+re.com/users
+* Host gpg-keyserver.westeurope.cloudapp.azure.com:443 was resolved.
+* IPv6: (none)
+* IPv4: 108.143.27.98
+*   Trying 108.143.27.98:443...
+* Connected to gpg-keyserver.westeurope.cloudapp.azure.com (108.143.27.98) port 443
+* ALPN: curl offers h2,http/1.1
+* TLSv1.3 (OUT), TLS handshake, Client hello (1):
+* [...]
+> POST /users HTTP/2
+> Host: gpg-keyserver.westeurope.cloudapp.azure.com
+> User-Agent: curl/8.5.0
+> Accept: */*
+> Content-Type: application/json
+> Content-Length: 66
+>
+< HTTP/2 409
+< content-type: text/plain;charset=utf-8
+< date: Thu, 23 Jan 2025 22:45:27 GMT
+< content-length: 8
+<
+* Connection #0 to host gpg-keyserver.westeurope.cloudapp.azure.com left intact
+Conflict
+```
+
+
+
+
 ## Documentation
 
 The entirety of our Java code has been documented using Javadoc-style comments.

@@ -34,7 +34,7 @@ public class Emails {
    */
   public record Email(String email, String username) {}
 
-  private final Database _db;
+  private final Database db;
 
   /**
    * Creates a new emails table instance
@@ -42,7 +42,7 @@ public class Emails {
    * @param ownerDb Owner database instance
    */
   public Emails(Database ownerDb) {
-    _db = ownerDb;
+    db = ownerDb;
   }
 
   /**
@@ -66,8 +66,8 @@ public class Emails {
   public Email[] getAll() {
     ArrayList<Email> emails = new ArrayList<>();
 
-    try (Statement stmt = _db.getStatement()) {
-      String query = "select * from " + _db.schema + ".emails;";
+    try (Statement stmt = db.getStatement()) {
+      String query = "select * from " + db.schema + ".emails;";
 
       ResultSet queryResult = stmt.executeQuery(query);
       while (queryResult.next()) {
@@ -90,8 +90,8 @@ public class Emails {
   public Email getOne(String email) {
     Email found_email;
 
-    try (Statement stmt = _db.getStatement()) {
-      String query = "select * from " + _db.schema + ".emails" + " where email = '" + email + "';";
+    try (Statement stmt = db.getStatement()) {
+      String query = "select * from " + db.schema + ".emails" + " where email = '" + email + "';";
 
       ResultSet queryResult = stmt.executeQuery(query);
       if (!queryResult.next()) {
@@ -115,9 +115,9 @@ public class Emails {
   public Email[] getByUser(String username) {
     ArrayList<Email> emails = new ArrayList<>();
 
-    try (Statement stmt = _db.getStatement()) {
+    try (Statement stmt = db.getStatement()) {
       String query =
-          "select * from " + _db.schema + ".emails" + " where username = '" + username + "';";
+          "select * from " + db.schema + ".emails" + " where username = '" + username + "';";
 
       ResultSet queryResult = stmt.executeQuery(query);
       while (queryResult.next()) {
@@ -141,9 +141,9 @@ public class Emails {
   public boolean userHasEmail(String username, String email) {
     boolean found = false;
 
-    try (Statement stmt = _db.getStatement()) {
+    try (Statement stmt = db.getStatement()) {
       String query =
-          "select * from " + _db.schema + ".emails" + " where username = '" + username + "';";
+          "select * from " + db.schema + ".emails" + " where username = '" + username + "';";
 
       ResultSet queryResult = stmt.executeQuery(query);
       while (queryResult.next()) {
@@ -166,10 +166,10 @@ public class Emails {
    * @return -1 if an error occurred, or 0 if successful
    */
   public int addToUser(Email email) {
-    try (Statement stmt = _db.getStatement()) {
+    try (Statement stmt = db.getStatement()) {
       String query =
           "insert into "
-              + _db.schema
+              + db.schema
               + ".emails (email, username) values ('"
               + email.email()
               + "', '"
@@ -190,8 +190,8 @@ public class Emails {
    * @return -1 if an error occurred, or 0 if successful
    */
   public int detach(String email) {
-    try (Statement stmt = _db.getStatement()) {
-      String query = "delete from " + _db.schema + ".emails where email = '" + email + "');";
+    try (Statement stmt = db.getStatement()) {
+      String query = "delete from " + db.schema + ".emails where email = '" + email + "');";
       return stmt.executeUpdate(query);
     } catch (SQLException e) {
       System.err.println("SQLException: " + e.getMessage());

@@ -11,7 +11,7 @@ Detaches an email address from a user. This also removes any key - email pairs f
 
 ### Responses
 
-- `200`: Request was successful
+- `204`: Email has been detached from user
 - `400`: Invalid username (malformed username)
 - `404`: Unknown username or email address is not attached to user
 
@@ -33,7 +33,7 @@ DELETE /emails/john.doe
 
 **Response**:
 
-`200 OK`
+`204 NO CONTENT`
 
 ### Example with an invalid username
 

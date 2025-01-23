@@ -31,6 +31,6 @@ public class Dummy {
     final Database database = ctx.appData(new Key<>("database"));
     final Cache cache = ctx.appData(new Key<>("cache"));
 
-    ctx.result("404 - Found");
+    ctx.result("404 - Found :)");
   }
 }

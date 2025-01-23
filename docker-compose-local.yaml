@@ -1,11 +1,43 @@
+name: gpg-keyserver
+
 networks:
-  gpg-keyserver-net:
+  internal:
     driver: bridge
 
 services:
+  database:
+    image: 'bitnami/postgresql:17'
+    hostname: 'database.internal'
+    restart: unless-stopped
+    environment:
+      - TZ=Europe/Zurich
+      - POSTGRESQL_USERNAME=gpg_keyserver
+      - POSTGRESQL_PASSWORD=password # FIXME Change this password
+      - POSTGRESQL_DATABASE=gpg_keyserver_db
+      - POSTGRESQL_POSTGRES_PASSWORD=root # FIXME Change this password
+    ports:
+      - 5432:5432
+    volumes:
+      - db-data:/data:ro
+      - ./db/db-init-script.sh:/docker-entrypoint-initdb.d/db-init-script.sh:ro
+      - ./db:/db-init-scripts:ro
+    networks:
+      - internal
+
+  website:
+    image: 'traefik/whoami:latest'
+    restart: unless-stopped
+    environment:
+      - TZ=Europe/Zurich
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.website.rule=Host(`localhost`)"
+      - "traefik.http.routers.website.entrypoints=web"
+    networks:
+      - internal
+
   reverseproxy:
     image: 'traefik:3'
-    container_name: gpg-keyserver-traefik
     restart: unless-stopped
     environment:
       - TZ=Europe/Zurich
@@ -18,43 +50,12 @@ services:
       - "--providers.docker.exposedbydefault=false"
       - "--entryPoints.web.address=:80"
     networks:
-      - gpg-keyserver-net
+      - internal
     ports:
       - 80:80
       - 8080:8080 # Traefik Dashboard
     volumes:
       - "/var/run/docker.sock:/var/run/docker.sock:ro"
 
-  website:
-    image: 'traefik/whoami:latest'
-    container_name: gpg-keyserver-website
-    restart: unless-stopped
-    environment:
-      - TZ=Europe/Zurich
-    labels:
-      - "traefik.enable=true"
-      - "traefik.http.routers.website.rule=Host(`localhost`)"
-      - "traefik.http.routers.website.entrypoints=web"
-    networks:
-      - gpg-keyserver-net
-
-  database:
-    image: 'bitnami/postgresql:17'
-    container_name: gpg-keyserver-postgresql
-    restart: unless-stopped
-    environment:
-      - TZ=Europe/Zurich
-      - POSTGRESQL_USERNAME=gpg_keyserver
-      - POSTGRESQL_PASSWORD=password123 # FIXME Change this password
-      - POSTGRESQL_DATABASE=gpg_keyserver_db
-      - POSTGRESQL_POSTGRES_PASSWORD=root # FIXME Change this password
-    ports:
-      - 5432:5432
-    volumes:
-      - gpg-keyserver-db-data:/data:ro
-    networks:
-      - gpg-keyserver-net
-
 volumes:
-  gpg-keyserver-db-data:
-  gpg-keyserver-ssl-certs:
+  db-data:

@@ -20,7 +20,8 @@ public class Main {
     Cache cache = new Cache();
 
     try {
-      db = new Database("localhost", "bdr", "bdr", "bdr", "gpg_keyserver", 5432);
+      // TODO Improve the way we variabilize the database connection parameters
+      db = new Database("localhost", "gpg_keyserver_db", "gpg_keyserver", "password", "gpg_keyserver", 5432);
       System.out.println("Connected to database!");
     } catch (SQLException e) {
       System.err.println(e.getMessage());

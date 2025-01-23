@@ -25,12 +25,15 @@ services:
       - internal
 
   website:
-    image: 'traefik/whoami:latest'
+    build:
+      context: .
+      dockerfile: Dockerfile
     restart: unless-stopped
     environment:
       - TZ=Europe/Zurich
     labels:
       - "traefik.enable=true"
+      - "traefik.http.services.website.loadbalancer.server.port=7070"
       - "traefik.http.routers.website.rule=Host(`localhost`)"
       - "traefik.http.routers.website.entrypoints=web"
     networks:

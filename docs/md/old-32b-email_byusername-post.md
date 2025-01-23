@@ -24,7 +24,7 @@ No response is returned when successful. When an error occurs, HTTP status code 
 **Request**:
 
 ```
-POST /email/by-username/john.doe
+POST /emails/john.doe
 [...]
 
 {
@@ -34,16 +34,16 @@ POST /email/by-username/john.doe
 
 **Response**:
 
-```
+`
 200 OK
-```
+`
 
 ### Example with an invalid username
 
 **Request**:
 
 ```
-POST /email/by-username/malf:or$med
+POST /emails/malf:or$med
 [...]
 
 {
@@ -53,9 +53,11 @@ POST /email/by-username/malf:or$med
 
 **Response**:
 
-```
+`
 400 BAD
+`
 
+```
 Bad Request
 ```
 
@@ -64,9 +66,8 @@ Bad Request
 **Request**:
 
 ```
-POST /email/by-username/john.doe
+POST /emails/john.doe
 [...]
-
 
 {
   "email": "john.doe@"
@@ -75,9 +76,11 @@ POST /email/by-username/john.doe
 
 **Response**:
 
-```
+`
 400 BAD
+`
 
+```
 Bad Request
 ```
 
@@ -86,9 +89,8 @@ Bad Request
 **Request**:
 
 ```
-POST /email/by-username/unknown.user
+POST /emails/unknown.user
 [...]
-
 
 {
   "email": "john.doe@example.com"
@@ -97,9 +99,11 @@ POST /email/by-username/unknown.user
 
 **Response**:
 
-```
+`
 404 NOT FOUND
+`
 
+```
 Not Found
 ```
 
@@ -108,9 +112,8 @@ Not Found
 **Request**:
 
 ```
-POST /email/by-username/john.doe
+POST /emails/john.doe
 [...]
-
 
 {
   "email": "john.doe@example.com"
@@ -119,8 +122,10 @@ POST /email/by-username/john.doe
 
 **Response**:
 
-```
+`
 410 CONFLICT
+`
 
+```
 Conflict
 ```

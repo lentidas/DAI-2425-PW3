@@ -65,7 +65,7 @@ PUT /users/john.doe
 ### Example with malformed username
 
 ```
-PUT /usersmalf:or$med
+PUT /users/malf:or$med
 [...]
 
 {

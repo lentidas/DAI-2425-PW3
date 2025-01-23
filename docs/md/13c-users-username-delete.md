@@ -21,7 +21,7 @@ The server returns the following status codes:
 
 Always returns an empty JSON list: `[]`
 
-### Example with valid data
+### Example with valid username
 
 **Request**:
 
@@ -31,9 +31,9 @@ DELETE /users/john.doe
 
 **Response**:
 
-```
-200 OK
+`200 OK`
 
+```json
 {
     "username": "john.doe",
     "firstname": "John",

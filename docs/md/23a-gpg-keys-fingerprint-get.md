@@ -23,7 +23,7 @@ When successful, it returns a JSON object containing the key's information:
 }
 ```
 
-### Example with a valid email
+### Example with a valid fingerprint
 
 **Request**:
 
@@ -44,8 +44,6 @@ GET /gpg-keys/AABBCCDDEEFFGGHHIIJJKKLLMMNNOOPPQQRRSSTT
 ```
 
 ### Example with invalid fingerprint
-
-If the provided email address is valid, but has no GPG keys attributed to it, an empty JSON list is returned:
 
 **Request**:
 

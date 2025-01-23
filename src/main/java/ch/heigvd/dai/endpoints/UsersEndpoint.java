@@ -58,22 +58,6 @@ public class UsersEndpoint {
     // ctx.contentType(ContentType.APPLICATION_JSON + "; charset=" + StandardCharsets.UTF_8.name());
   }
 
-  public void getUser(@NotNull Context ctx) {
-    String username = ctx.pathParamAsClass("username", String.class).get();
-
-    if (!Users.validateUsername(username)) {
-      throw new BadRequestResponse();
-    }
-
-    final Database database = ctx.appData(new Key<>("database"));
-    User user = database.getUsers().getOne(username);
-    if (user == null) {
-      throw new NotFoundResponse();
-    }
-
-    ctx.json(user);
-  }
-
   public void createUser(@NotNull Context ctx) {
     User newUser =
         ctx.bodyValidator(User.class)
@@ -99,6 +83,21 @@ public class UsersEndpoint {
 
     ctx.status(201);
     ctx.json(newUser);
+  }
+
+  public void getUser(@NotNull Context ctx) {
+    String username =
+        ctx.pathParamAsClass("username", String.class)
+            .check(Users::validateUsername, "Invalid username")
+            .get();
+
+    final Database database = ctx.appData(new Key<>("database"));
+    User user = database.getUsers().getOne(username);
+    if (user == null) {
+      throw new NotFoundResponse();
+    }
+
+    ctx.json(user);
   }
 
   public void updateUser(@NotNull Context ctx) {

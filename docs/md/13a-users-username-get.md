@@ -66,4 +66,6 @@ GET /users/unknown.user
 
 **Response**:
 
-`404 Not Found`
+```
+404 Not Found
+```

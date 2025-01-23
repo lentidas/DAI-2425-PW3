@@ -19,7 +19,7 @@ services:
       - 5432:5432
     volumes:
       - db-data:/data:ro
-      - ./db/db-init.sh:/docker-entrypoint-initdb.d/db-init.sh:ro
+      - ./db/db-init-script.sh:/docker-entrypoint-initdb.d/db-init-script.sh:ro
       - ./db:/db-init-scripts:ro
     networks:
       - internal

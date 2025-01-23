@@ -91,5 +91,22 @@ public class GPGKeysEndpoints {
     // TODO Should provide a way to update the key's emails or the key itself
   }
 
-  public void deleteGPGKey(@NotNull Context ctx) {}
+  public void deleteGPGKey(@NotNull Context ctx) {
+    String fingerprint =
+        ctx.pathParamAsClass("fingerprint", String.class)
+            .check(obj -> obj.length() == 40, "Fingerprint must be 40 characters long")
+            .get();
+
+    final Database database = ctx.appData(new Key<>("database"));
+    GPGKey key = database.getGPGKeys().getOne(fingerprint);
+    if (key == null) {
+      throw new NotFoundResponse();
+    }
+
+    if (database.getGPGKeys().deleteKey(fingerprint) == -1) {
+      throw new BadRequestResponse();
+    } else {
+      ctx.json(key);
+    }
+  }
 }

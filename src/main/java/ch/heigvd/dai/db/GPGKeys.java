@@ -125,6 +125,23 @@ public class GPGKeys {
   }
 
   /**
+   * Deletes a GPG key from the database.
+   *
+   * @param fingerprint a {@link String} that is the fingerprint of the key
+   * @return -1 in case of an error, other value if no error
+   */
+  public int deleteKey(String fingerprint) {
+    try (Statement stmt = db.getStatement()) {
+      String query = "DELETE FROM gpg_keyserver.gpg_keys WHERE fingerprint = '" + fingerprint + "';";
+
+      return stmt.executeUpdate(query);
+    } catch (SQLException e) {
+      System.err.println("SQLException: " + e.getMessage());
+      return -1;
+    }
+  }
+
+  /**
    * Validates a GPG key.
    *
    * @param key a {@link String} that is the key to be validated, in ASCII-armored format

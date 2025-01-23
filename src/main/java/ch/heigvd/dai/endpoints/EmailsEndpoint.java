@@ -18,6 +18,7 @@
 
 package ch.heigvd.dai.endpoints;
 
+import ch.heigvd.dai.cache.Cache;
 import ch.heigvd.dai.db.Database;
 import ch.heigvd.dai.db.Emails;
 import ch.heigvd.dai.db.Emails.Email;
@@ -30,6 +31,7 @@ import io.javalin.http.Context;
 import io.javalin.http.HttpStatus;
 import io.javalin.http.InternalServerErrorResponse;
 import io.javalin.http.NotFoundResponse;
+import io.javalin.http.NotModifiedResponse;
 import org.jetbrains.annotations.NotNull;
 
 public class EmailsEndpoint {
@@ -161,10 +163,20 @@ public class EmailsEndpoint {
   public void getUserEmails(@NotNull Context ctx) {
     String username = ctx.pathParamAsClass("username", String.class).get();
     final Database database = ctx.appData(new Key<>("database"));
+    final Cache cache = ctx.appData(new Key<>("cache"));
     this.validateUser(username, database);
+
+    String cacheStr = ctx.req().getRequestURL() + " & username=" + username;
+    if(cache.hasEntry(cacheStr))
+    {
+      throw new NotModifiedResponse();
+    }
+
 
     Email[] userEmails = database.getEmails().getByUser(username);
     ctx.json(userEmails);
+    ctx.header("Cache-Control: public, max-age=2500");
+    cache.push(cacheStr, userEmails);
   }
 
   /**

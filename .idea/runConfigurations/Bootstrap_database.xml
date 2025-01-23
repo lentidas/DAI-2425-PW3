@@ -1,0 +1,12 @@
+<component name="ProjectRunConfigurationManager">
+  <configuration default="false" name="Bootstrap database" type="DatabaseScript" editBeforeRun="true">
+    <script-file value="$PROJECT_DIR$/db/db_scheme.sql" />
+    <script-file value="$PROJECT_DIR$/db/triggers.sql" />
+    <script-file value="$PROJECT_DIR$/db/functions.sql" />
+    <script-file value="$PROJECT_DIR$/db/virtual_tables.sql" />
+    <script-file value="$PROJECT_DIR$/db/starting_data.sql" />
+    <script-mode>FILE</script-mode>
+    <data-source id="2a144c48-651e-4443-ab86-878b74fc8677" />
+    <method v="2" />
+  </configuration>
+</component>

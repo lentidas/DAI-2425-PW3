@@ -87,3 +87,8 @@
     - name: Reboot after package upgrade if required
       ansible.builtin.reboot:
       when: reboot_required_file.stat.exists == true
+
+    - name: Clone project repository
+      ansible.builtin.git:
+        repo: https://github.com/lentidas/DAI-2425-PW3
+        dest: /home/ubuntu/DAI-2425-PW3

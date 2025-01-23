@@ -1,0 +1,61 @@
+name: gpg-keyserver
+
+networks:
+  internal:
+    driver: bridge
+
+services:
+  database:
+    image: 'bitnami/postgresql:17'
+    hostname: 'database.internal'
+    restart: unless-stopped
+    environment:
+      - TZ=Europe/Zurich
+      - POSTGRESQL_USERNAME=gpg_keyserver
+      - POSTGRESQL_PASSWORD=password # FIXME Change this password
+      - POSTGRESQL_DATABASE=gpg_keyserver_db
+      - POSTGRESQL_POSTGRES_PASSWORD=root # FIXME Change this password
+    ports:
+      - 5432:5432
+    volumes:
+      - db-data:/data:ro
+      - ./db/db-init-script.sh:/docker-entrypoint-initdb.d/db-init-script.sh:ro
+      - ./db:/db-init-scripts:ro
+    networks:
+      - internal
+
+  website:
+    image: 'traefik/whoami:latest'
+    restart: unless-stopped
+    environment:
+      - TZ=Europe/Zurich
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.website.rule=Host(`localhost`)"
+      - "traefik.http.routers.website.entrypoints=web"
+    networks:
+      - internal
+
+  reverseproxy:
+    image: 'traefik:3'
+    restart: unless-stopped
+    environment:
+      - TZ=Europe/Zurich
+    command:
+      - "--global.checknewversion=false"
+      - "--global.sendAnonymousUsage=false"
+      #- "--log.level=DEBUG"
+      - "--api.insecure=true"
+      - "--providers.docker=true"
+      - "--providers.docker.exposedbydefault=false"
+      - "--entryPoints.web.address=:80"
+    networks:
+      - internal
+    ports:
+      - 80:80
+      - 8080:8080 # Traefik Dashboard
+    volumes:
+      - "/var/run/docker.sock:/var/run/docker.sock:ro"
+
+volumes:
+  db-data:

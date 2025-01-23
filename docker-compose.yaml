@@ -1,0 +1,73 @@
+name: gpg-keyserver
+
+networks:
+  internal:
+    driver: bridge
+
+services:
+  database:
+    image: 'bitnami/postgresql:17'
+    hostname: 'database.internal'
+    restart: unless-stopped
+    environment:
+      - TZ=Europe/Zurich
+      - POSTGRESQL_USERNAME=gpg_keyserver
+      - POSTGRESQL_PASSWORD=password # FIXME Change this password
+      - POSTGRESQL_DATABASE=gpg_keyserver_db
+      - POSTGRESQL_POSTGRES_PASSWORD=root # FIXME Change this password
+    ports:
+      - 5432:5432
+    volumes:
+      - db-data:/data:ro
+      - ./db/db-init.sh:/docker-entrypoint-initdb.d/db-init.sh:ro
+      - ./db:/db-init-scripts:ro
+    networks:
+      - internal
+
+  website:
+    image: 'traefik/whoami:latest'
+    restart: unless-stopped
+    environment:
+      - TZ=Europe/Zurich
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.website.rule=Host(`gpg-keyserver.westeurope.cloudapp.azure.com`)"
+      - "traefik.http.routers.website.entrypoints=websecure"
+      - "traefik.http.routers.website.tls=true"
+      - "traefik.http.routers.website.tls.certresolver=letsencrypt"
+    networks:
+      - internal
+
+  reverseproxy:
+    image: 'traefik:3'
+    restart: unless-stopped
+    environment:
+      - TZ=Europe/Zurich
+    command:
+      - "--global.checknewversion=false"
+      - "--global.sendAnonymousUsage=false"
+      #- "--log.level=DEBUG"
+      - "--api.insecure=true"
+      - "--providers.docker=true"
+      - "--providers.docker.exposedbydefault=false"
+      - "--entryPoints.web.address=:80"
+      - "--entryPoints.websecure.address=:443"
+      - "--certificatesresolvers.letsencrypt.acme.httpchallenge=true"
+      - "--certificatesresolvers.letsencrypt.acme.httpchallenge.entrypoint=web"
+      - "--certificatesresolvers.letsencrypt.acme.caserver=https://acme-v02.api.letsencrypt.org/directory"
+      - "--certificatesresolvers.letsencrypt.acme.email=goncalo.carvalheiroheleno@heig-vd.ch"
+      - "--certificatesresolvers.letsencrypt.acme.storage=/letsencrypt/acme.json"
+    networks:
+      - internal
+    ports:
+      - 80:80
+      - 443:443
+      - 8080:8080 # Traefik Dashboard
+    volumes:
+      - "/var/run/docker.sock:/var/run/docker.sock:ro"
+      - ssl-certs:/letsencrypt:rw
+
+
+volumes:
+  db-data:
+  ssl-certs:

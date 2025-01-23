@@ -4,9 +4,9 @@ Deletes a key from the server.
 
 ### Parameters
 
-| Parameter     | Optional? | Description                                           |
-|---------------|-----------|-------------------------------------------------------|
-| `fingerprint` |           | Fingerprint of the GPG key the client want to obtain. |
+| Parameter     | Optional? | Description                           |
+|---------------|-----------|---------------------------------------|
+| `fingerprint` |           | Fingerprint of the GPG key to delete. |
 
 ### Responses
 

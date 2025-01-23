@@ -47,64 +47,64 @@ public class Main {
                   ContentType.APPLICATION_JSON + "; charset=" + StandardCharsets.UTF_8.name();
 
               // TODO Remove dummy endpoint
-              config.router.apiBuilder(
-                  () -> path(
-                      "/",
-                      () -> get(dummy::DummyEndpoint)));
+              config.router.apiBuilder(() -> path("/", () -> get(dummy::DummyEndpoint)));
 
               // Configure the API routes for the /users domain.
               config.router.apiBuilder(
-                  () -> path(
-                      "/users",
-                      () -> {
-                        get(users::getUsers);
-                        post(users::createUser);
-                        path(
-                            "/{username}",
-                            () -> {
-                              get(users::getUser);
-                              put(users::updateUser);
-                              delete(users::deleteUser);
+                  () ->
+                      path(
+                          "/users",
+                          () -> {
+                            get(users::getUsers);
+                            post(users::createUser);
+                            path(
+                                "/{username}",
+                                () -> {
+                                  get(users::getUser);
+                                  put(users::updateUser);
+                                  delete(users::deleteUser);
 
-                              path(
-                                  "/{email-id}",
-                                  () -> {
-                                    put(users::updateUserEmail);
-                                    delete(users::deleteUserEmail);
-                                  });
-                            });
-                      }));
+                                  path(
+                                      "/{email-id}",
+                                      () -> {
+                                        put(users::updateUserEmail);
+                                        delete(users::deleteUserEmail);
+                                      });
+                                });
+                          }));
 
               // Configure the API routes for the /emails domain.
               config.router.apiBuilder(
-                  () -> path(
-                      "/emails",
-                      () -> {
-                        get(emails::getEmails);
-                        path(
-                            "/{username}",
-                            () -> {
-                              post(emails::addUserEmail);
-                              get(emails::getUserEmails);
-                              delete(emails::deleteUserEmail);
-                            });
-                      }));
+                  () ->
+                      path(
+                          "/emails",
+                          () -> {
+                            get(emails::getEmails);
+                            path(
+                                "/{username}",
+                                () -> {
+                                  post(emails::addUserEmail);
+                                  get(emails::getUserEmails);
+                                  delete(emails::deleteUserEmail);
+                                });
+                          }));
 
               // Configure the API routes for the /gpg-keys domain.
               config.router.apiBuilder(
-                  () -> path(
-                      "/gpg-keys",
-                      () -> {
-                        get(gpgKeys::getGPGKeys);
-                        post(gpgKeys::addGPGKey);
-                        path(
-                            "/{fingerprint}",
-                            () -> {
-                              get(gpgKeys::getGPGKey);
-                              put(gpgKeys::updateGPGKey);
-                              delete(gpgKeys::deleteGPGKey);
-                            });
-                      }));
+                  () ->
+                      path(
+                          "/gpg-keys",
+                          () -> {
+                            get(gpgKeys::getGPGKeys);
+                            post(gpgKeys::addGPGKey);
+                            path(
+                                "/{fingerprint}",
+                                () -> {
+                                  get(gpgKeys::getGPGKey);
+                                  put(gpgKeys::updateGPGKey);
+                                  delete(gpgKeys::deleteGPGKey);
+                                });
+                          }));
             });
 
     app.start(PORT);

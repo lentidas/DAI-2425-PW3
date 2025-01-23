@@ -7,9 +7,9 @@ followed by moving the emails from the old user to the new one, then deleting th
 
 ### Parameters
 
-| Parameter   | Optional? | Description                       |
-|-------------|-----------|-----------------------------------|
-| `username`  |           | Username to be used for this user |
+| Parameter   | Optional? | Description                        |
+|-------------|-----------|------------------------------------|
+| `username`  |           | Username of the user to be edited. |
 
 ### Request
 
@@ -52,9 +52,9 @@ PUT /users/john.doe
 
 **Response**:
 
-```
-200 OK
+`200 OK`
 
+```json
 {
     "username": "john.doe",
     "firstName": "John",

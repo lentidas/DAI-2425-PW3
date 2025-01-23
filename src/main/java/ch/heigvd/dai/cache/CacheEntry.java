@@ -24,7 +24,7 @@ import java.time.Instant;
 class CacheEntry {
 
   static final int CACHE_EXPIRY_MINUTES = 5;
-  private final Object _storedObject;
+  private final Object storedObject;
   private final long expiryTime;
 
   /**
@@ -34,7 +34,7 @@ class CacheEntry {
    * @param expiryMinutes How many minutes it takes until the entry expires
    */
   CacheEntry(Object storedObject, int expiryMinutes) {
-    _storedObject = storedObject;
+    this.storedObject = storedObject;
     expiryTime = Instant.now().getEpochSecond() + (expiryMinutes * 60L);
   }
 
@@ -53,6 +53,6 @@ class CacheEntry {
    * @return The stored object
    */
   Object storedObject() {
-    return _storedObject;
+    return this.storedObject;
   }
 }

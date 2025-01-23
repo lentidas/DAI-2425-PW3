@@ -25,24 +25,24 @@ import javax.management.openmbean.KeyAlreadyExistsException;
 /** A cache-managing class */
 public class Cache {
 
-  private final HashMap<String, CacheEntry> _entryMap;
+  private final HashMap<String, CacheEntry> entryMap;
 
   /** Public constructor for the cache instance */
   public Cache() {
-    _entryMap = new HashMap<>();
+    entryMap = new HashMap<>();
   }
 
   /** Removes all expired cache entries */
   private void purge() {
     ArrayList<String> toDelete = new ArrayList<>();
-    for (HashMap.Entry<String, CacheEntry> pair : _entryMap.entrySet()) {
+    for (HashMap.Entry<String, CacheEntry> pair : entryMap.entrySet()) {
       if (pair.getValue().hasExpired()) {
         toDelete.add(pair.getKey());
       }
     }
 
     for (String key : toDelete) {
-      _entryMap.remove(key);
+      entryMap.remove(key);
     }
   }
 
@@ -53,7 +53,7 @@ public class Cache {
    * @return True if entry exists, false if not
    */
   public boolean hasEntry(String key) {
-    return _entryMap.containsKey(key);
+    return entryMap.containsKey(key);
   }
 
   /**
@@ -70,7 +70,7 @@ public class Cache {
       throw new IndexOutOfBoundsException("Unknown key '" + key + "'");
     }
 
-    CacheEntry entry = _entryMap.get(key);
+    CacheEntry entry = entryMap.get(key);
     return entry.storedObject();
   }
 
@@ -86,7 +86,7 @@ public class Cache {
       throw new KeyAlreadyExistsException("Key '" + key + "' already exists");
     }
 
-    _entryMap.put(key, new CacheEntry(value, CacheEntry.CACHE_EXPIRY_MINUTES));
+    entryMap.put(key, new CacheEntry(value, CacheEntry.CACHE_EXPIRY_MINUTES));
   }
 
   /**
@@ -100,7 +100,7 @@ public class Cache {
       throw new IndexOutOfBoundsException("Unknown key '" + key + "'");
     }
 
-    _entryMap.remove(key);
+    entryMap.remove(key);
   }
 
   /**
@@ -117,6 +117,6 @@ public class Cache {
 
   /** Empties the cache */
   public void clear() {
-    _entryMap.clear();
+    entryMap.clear();
   }
 }

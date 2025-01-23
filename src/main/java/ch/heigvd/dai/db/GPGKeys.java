@@ -72,7 +72,7 @@ public class GPGKeys {
     ArrayList<GPGKey> keys = new ArrayList<>();
 
     try (Statement stmt = db.getStatement()) {
-      String query = "SELECT * FROM gpg_keyserver.gpg_keys;";
+      String query = "SELECT * FROM " + db.schema + ".gpg_keys;";
 
       ResultSet queryResult = stmt.executeQuery(query);
       while (queryResult.next()) {
@@ -98,7 +98,7 @@ public class GPGKeys {
 
     try (Statement stmt = db.getStatement()) {
       String query =
-          "SELECT * FROM gpg_keyserver.gpg_keys WHERE fingerprint = '" + fingerprint + "';";
+          "SELECT * FROM " + db.schema + ".gpg_keys WHERE fingerprint = '" + fingerprint + "';";
 
       ResultSet queryResult = stmt.executeQuery(query);
       if (!queryResult.next()) {
@@ -123,7 +123,7 @@ public class GPGKeys {
   public int createKey(GPGKey key) {
     try (Statement stmt = db.getStatement()) {
       StringBuilder query =
-          new StringBuilder("INSERT INTO gpg_keyserver.gpg_keys (fingerprint, key) VALUES (");
+          new StringBuilder("INSERT INTO " + db.schema + ".gpg_keys (fingerprint, key) VALUES (");
       query.append("'").append(key.fingerprint()).append("', ");
       query.append("'").append(key.key()).append("');");
 

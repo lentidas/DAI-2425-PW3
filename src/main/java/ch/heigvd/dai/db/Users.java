@@ -80,7 +80,7 @@ public class Users {
     ArrayList<User> users = new ArrayList<>();
 
     try (Statement stmt = db.getStatement()) {
-      String query = "SELECT * FROM gpg_keyserver.users;";
+      String query = "SELECT * FROM " + db.schema + ".users;";
 
       ResultSet queryResult = stmt.executeQuery(query);
       while (queryResult.next()) {
@@ -111,7 +111,7 @@ public class Users {
     ArrayList<User> users = new ArrayList<>();
 
     try (Statement stmt = db.getStatement()) {
-      StringBuilder query = new StringBuilder("SELECT * FROM gpg_keyserver.users WHERE ");
+      StringBuilder query = new StringBuilder("SELECT * FROM " + db.schema + ".users WHERE ");
 
       if (firstName != null) {
         query.append("first_name iLIKE '%").append(firstName).append("%'");
@@ -145,7 +145,7 @@ public class Users {
     User user;
 
     try (Statement stmt = db.getStatement()) {
-      String query = "SELECT * FROM gpg_keyserver.users WHERE username = '" + username + "';";
+      String query = "SELECT * FROM " + db.schema + ".users WHERE username = '" + username + "';";
 
       ResultSet queryResult = stmt.executeQuery(query);
       if (!queryResult.next()) {
@@ -171,7 +171,7 @@ public class Users {
     try (Statement stmt = db.getStatement()) {
       StringBuilder query =
           new StringBuilder(
-              "INSERT INTO gpg_keyserver.users (username, first_name, last_name) VALUES (");
+              "INSERT INTO " + db.schema + ".users (username, first_name, last_name) VALUES (");
       query.append("'").append(user.username).append("', ");
       query.append("'").append(user.firstName).append("', ");
       query.append("'").append(user.lastName).append("');");
@@ -191,7 +191,7 @@ public class Users {
    */
   public int updateUser(User user) {
     try (Statement stmt = db.getStatement()) {
-      StringBuilder query = new StringBuilder("UPDATE gpg_keyserver.users SET ");
+      StringBuilder query = new StringBuilder("UPDATE " + db.schema + ".users SET ");
       query.append("first_name = '").append(user.firstName).append("', ");
       query.append("last_name = '").append(user.lastName).append("' ");
       query.append("WHERE username = '").append(user.username).append("';");
@@ -212,7 +212,7 @@ public class Users {
   public int deleteUser(User user) {
     try (Statement stmt = db.getStatement()) {
       String query =
-          "DELETE FROM gpg_keyserver.users" + " WHERE username = '" + user.username + "';";
+          "DELETE FROM " + db.schema + ".users" + " WHERE username = '" + user.username + "';";
 
       return stmt.executeUpdate(query);
     } catch (SQLException e) {

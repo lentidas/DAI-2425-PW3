@@ -167,11 +167,9 @@ public class EmailsEndpoint {
     this.validateUser(username, database);
 
     String cacheStr = ctx.req().getRequestURL() + " & username=" + username;
-    if(cache.hasEntry(cacheStr))
-    {
+    if (cache.hasEntry(cacheStr)) {
       throw new NotModifiedResponse();
     }
-
 
     Email[] userEmails = database.getEmails().getByUser(username);
     ctx.json(userEmails);

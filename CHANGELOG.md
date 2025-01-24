@@ -1,5 +1,30 @@
 # Changelog
 
+## [0.1.5](https://github.com/lentidas/DAI-2425-PW3/compare/v0.1.4...v0.1.5) (2025-01-24)
+
+
+### Features
+
+* adding cmd to create key ([02e2d0d](https://github.com/lentidas/DAI-2425-PW3/commit/02e2d0db58a0361e798f301450ec68e06c914fc2))
+* Adding first cURL commands ([7221cda](https://github.com/lentidas/DAI-2425-PW3/commit/7221cdaebc028bd171a47f43cea726679517cf78))
+* Adding remaining endpoint functionalities ([40413dd](https://github.com/lentidas/DAI-2425-PW3/commit/40413ddae221c69610bb6744de0e69c2b828cb45))
+* Cache ([9810099](https://github.com/lentidas/DAI-2425-PW3/commit/98100999640c5001d649e7fa657b2d4beb3e44d1))
+* Create README.md ([e6c8ceb](https://github.com/lentidas/DAI-2425-PW3/commit/e6c8ceba4bd93a7c4f71b15deaf9d9c441289825))
+* Easter Egg... ([4d08047](https://github.com/lentidas/DAI-2425-PW3/commit/4d08047c543bdd589046b512fda7fec313c53e51))
+* Pushing newer version of API ([5eafc17](https://github.com/lentidas/DAI-2425-PW3/commit/5eafc178ce8cb46e292cebc5b746943df2dc1f0a))
+
+
+### Bug Fixes
+
+* build locally on Azure because we had issues with ghrc.io ([a276976](https://github.com/lentidas/DAI-2425-PW3/commit/a2769761faae1c350eb4f5f331fba52f626862a2))
+* correct the path to the init script ([a750a4a](https://github.com/lentidas/DAI-2425-PW3/commit/a750a4a3ede7fab4af76486153368a6490d02fac))
+* do a spotless:apply that was preventing the deployment ([78caf3d](https://github.com/lentidas/DAI-2425-PW3/commit/78caf3d60f3909966e048f670e73d4e410047b3b))
+
+
+### Documentation
+
+* add last things to README.md ([80f1c5d](https://github.com/lentidas/DAI-2425-PW3/commit/80f1c5da57c38437b11ac319466da98070e00f0f))
+
 ## [0.1.4](https://github.com/lentidas/DAI-2425-PW3/compare/v0.1.3...v0.1.4) (2025-01-23)
 
 
